@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">Intimace</string>
+
+    <string name="guide_1_title">Understanding Your Cycle</string>
+    <string name="guide_2_title">Managing Symptoms</string>
+    <string name="guide_3_title">Birth Control Options</string>
+
+    <string name="guide_1_desc">
+        Learning how your menstrual cycle works is key to understanding your body’s natural rhythms. This guide breaks down each phase — menstrual, follicular, ovulation, and luteal — to help you recognize hormonal changes and what they mean for your mood, energy, and fertility. By tracking your cycle, you can better predict your period, identify your fertile window, and notice patterns that may indicate hormonal imbalances or reproductive health issues.\nUnderstanding your cycle empowers you to make informed decisions about your health and lifestyle. Whether you’re planning for pregnancy, trying to prevent it, or simply want to feel more in tune with your body, this guide offers practical insights and tracking tips to help you stay balanced throughout each month.
+    </string>
+    <string name="guide_2_desc">
+        From cramps and bloating to mood swings and fatigue, menstrual symptoms can affect your daily comfort and well-being. This guide explores natural and medical ways to ease discomfort, including hydration, gentle exercise, nutrition, and relaxation techniques. You’ll also learn when symptoms might signal something more serious, such as endometriosis or polycystic ovary syndrome (PCOS).\nWith practical advice and science-backed strategies, this guide helps you take control of your cycle-related symptoms rather than letting them control you. The goal is not just relief, but a deeper understanding of how your body responds — so you can manage each cycle with confidence and care.
+    </string>
+    <string name="guide_3_desc">
+        Choosing the right birth control method is a personal decision that depends on your body, goals, and lifestyle. This guide provides an overview of various options — from hormonal methods like pills, patches, and injections to non-hormonal ones like condoms, copper IUDs, and fertility awareness. Each section outlines how the method works, its effectiveness, possible side effects, and convenience.\nBy comparing these options side by side, you can make an informed choice that aligns with your health needs and reproductive goals. Whether you want something temporary, long-term, or hormone-free, this guide serves as a practical companion in finding what works best for you.
+    </string>
+
+    <string name="product_1_type">Menstrual</string>
+    <string name="product_2_type">Testing</string>
+    <string name="product_3_type">Emergency</string>
+    <string name="product_4_type">Pills</string>
+
+    <string name="product_1_name">Menstrual Cup</string>
+    <string name="product_2_name">Pregnancy Test Kit (2 Pack)</string>
+    <string name="product_3_name">Emergency Contraception</string>
+    <string name="product_4_name">Birth Control Pills (1 Month)</string>
+
+    <string name="product_1_location">Makati</string>
+    <string name="product_2_location">Quezon City</string>
+    <string name="product_3_location">Davao</string>
+    <string name="product_4_location">Cebu</string>
+
+    <string name="product_1_price">1499.99</string>
+    <string name="product_2_price">637.75</string>
+    <string name="product_3_price">1249.99</string>
+    <string name="product_4_price">775.50</string>
+
+    <string name="product_1_desc">A reusable, eco-friendly alternative to pads and tampons that collects menstrual flow comfortably for up to 12 hours. Made of medical-grade silicone, it’s safe, leak-resistant, and ideal for active lifestyles.</string>
+    <string name="product_2_desc">A reliable home test that provides quick and accurate results within minutes. The two-pack design allows for double-checking or future use.</string>
+    <string name="product_3_desc">A safe and effective pill designed to prevent pregnancy after unprotected sex or contraceptive failure. Best taken as soon as possible within 72 hours.</string>
+    <string name="product_4_desc">A monthly pack of hormonal tablets that prevent ovulation and help regulate menstrual cycles. Taken daily, they provide reliable and convenient pregnancy prevention.</string>
+
+    <string name="product_1_bch">Mercury Drug</string>
+    <string name="product_2_bch">South Star Drug</string>
+    <string name="product_3_bch">Watsons</string>
+    <string name="product_4_bch">MerryMary</string>
+    <string name="order_1_id">ORD-2023-0001</string>
+    <string name="order_1_placement_date">October 5, 2023</string>
+    <string name="order_1_status">Delivered</string>
+    <string name="order_1_subtotal">1137.74</string>
+    <string name="order_1_shipping">249.99</string>
+    <string name="order_1_total">1387.73</string>
+    <string name="order_1_address">123 Main Street, Makati City, Metro Manila, Philippines</string>
+    <string name="order_1_tracking_number">TRK123456789PH</string>
+</resources>
