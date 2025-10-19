@@ -1,9 +1,11 @@
 package com.intimace.ui.screens.orderHistoryPath
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +27,7 @@ import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -38,216 +44,274 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.intimace.data.orders
+import com.intimace.model.Order
 import com.intimace.ui.components.AppBottomNav
+import com.intimace.ui.screens.shoppingCartPath.toPeso
+import com.intimace.ui.theme.IntimaceTheme
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+
+val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.US)
+val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.US)
 
 @Composable
 fun OrderScreen(
     navController: NavHostController = rememberNavController(),
+    order: Order,
     onBack: () -> Unit = {}
 ) {
-    val orderId = 1
     var selectedNav by remember { mutableIntStateOf(3) }
     val scrollState = rememberScrollState()
 
-    // sample timeline entries
-    data class TimelineStep(val title: String, val date: String, val time: String)
-    val timeline = listOf(
-        TimelineStep("Order Placed", "October 5, 2023", "10:30 AM"),
-        TimelineStep("Order Confirmed", "October 5, 2023", "11:45 AM"),
-        TimelineStep("Order Shipped", "October 6, 2023", "09:15 AM"),
-        TimelineStep("Order Delivered", "October 7, 2023", "02:30 PM")
-    )
-
-    // sample items
-    data class Item(val title: String, val price: String, val qty: Int)
-    val items = listOf(
-        Item("Premium Condoms (12 Pack)", "₱499.99", 1),
-        Item("Pregnancy Test Kit (2 Pack)", "₱637.75", 1)
-    )
-
-    Scaffold() { innerPadding ->
-        Column(
+    Scaffold { innerPadding ->
+        innerPadding
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            // header
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { onBack() }) {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            // Header
+            item {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { onBack() }) {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        "Order Details",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
-                Text("Order Details", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // top summary card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                        Column {
-                            Text("ORD-2023-0001", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Row {
-                                Text("Placed on", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("October 5, 2023", style = MaterialTheme.typography.bodySmall)
-                            }
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .clip(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
-                                .background(Color(0xFFDFF6E9))
-                                .padding(horizontal = 10.dp, vertical = 6.dp)
+            // Top summary card
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text("Delivered", color = Color(0xFF2E7D32), style = MaterialTheme.typography.bodySmall)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-                    // horizontal divider
-                    HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Text("Order Timeline", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    // timeline column
-                    Column {
-                        timeline.forEachIndexed { idx, step ->
-                            Row(modifier = Modifier.fillMaxWidth()) {
-                                // timeline icon + line
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(36.dp)
-                                            .clip(CircleShape)
-                                            .background(Color(0xFFDFF6E9)),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(imageVector = Icons.Default.LocalShipping, contentDescription = null, tint = Color(0xFF2E7D32))
-                                    }
-                                    if (idx != timeline.lastIndex) {
-                                        // vertical line (simple)
-                                        Box(modifier = Modifier
-                                            .width(2.dp)
-                                            .height(40.dp)
-                                            .background(Color(0xFFDFF6E9)))
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.width(12.dp))
-
-                                Column {
-                                    Text(step.title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
-                                    Spacer(modifier = Modifier.height(6.dp))
-                                    Row {
-                                        Text(step.date, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                                        Spacer(modifier = Modifier.width(12.dp))
-                                        Text(step.time, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                                    }
+                            Column {
+                                // If order.orderId is a String, use Text(order.orderId)
+                                Text(
+                                    text = order.orderId,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Row {
+                                    Text("Placed on", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = order.placementDate.format(dateFormatter),
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
                                 }
                             }
 
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(20.dp))
+                                    .background(Color(0xFFDFF6E9))
+                                    .padding(horizontal = 10.dp, vertical = 6.dp)
+                            ) {
+                                Text(order.status, color = Color(0xFF2E7D32), style = MaterialTheme.typography.bodySmall)
+                            }
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
 
-                    // Delivery information
-                    HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
-                    Spacer(modifier = Modifier.height(12.dp))
+                        Divider()
 
-                    Text("Delivery Information", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(imageVector = Icons.Default.LocationOn, contentDescription = "Address")
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("123 Main Street, Makati City, Metro Manila, Philippines", style = MaterialTheme.typography.bodySmall)
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(imageVector = Icons.Default.LocalShipping, contentDescription = "Tracking")
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Tracking Number: ", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                        Text("TRK123456789PH", style = MaterialTheme.typography.bodySmall)
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Text("Order Timeline", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // timeline - use Column with forEachIndexed (safe, small lists)
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            order.timeline.timelineSteps.forEachIndexed { idx, step ->
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    // timeline icon + line
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(36.dp)
+                                                .clip(CircleShape)
+                                                .background(Color(0xFFDFF6E9)),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.LocalShipping,
+                                                contentDescription = null,
+                                                tint = Color(0xFF2E7D32)
+                                            )
+                                        }
+                                        if (idx != order.timeline.timelineSteps.size - 1) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .width(2.dp)
+                                                    .height(40.dp)
+                                                    .background(Color(0xFFDFF6E9))
+                                            )
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.width(12.dp))
+
+                                    Column {
+                                        Text(
+                                            text = step.status,
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                        Spacer(modifier = Modifier.height(6.dp))
+                                        Row {
+                                            Text(step.date.format(dateFormatter), style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                            Spacer(modifier = Modifier.width(12.dp))
+                                            Text(text = step.time.format(timeFormatter), style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Divider()
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Text("Delivery Information", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(imageVector = Icons.Default.LocationOn, contentDescription = "Address")
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = order.address, style = MaterialTheme.typography.bodySmall)
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(imageVector = Icons.Default.LocalShipping, contentDescription = "Tracking")
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Tracking Number: ", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                            Text(text = order.trackingNumber, style = MaterialTheme.typography.bodySmall)
+                        }
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
 
             // Order items card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Order Items", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                    Spacer(modifier = Modifier.height(12.dp))
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Text("Order Items", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
 
-                    items.forEach { it ->
-                        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Box(modifier = Modifier.size(56.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp)).background(Color(0xFFF2F2F4)))
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(it.title, style = MaterialTheme.typography.bodyMedium)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text("Qty: ${it.qty}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                        // Items list: use Column + forEach (safe for small order lists)
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            order.productsOrdered.forEach { (product, quantity) ->
+                                Column {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(56.dp)
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .background(Color(0xFFF2F2F4))
+                                        ) {
+                                            Image(
+                                                painter = painterResource(product.img),
+                                                contentDescription = null,
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier.fillMaxSize()
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Text(text = product.name, style = MaterialTheme.typography.bodyMedium)
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            Text("Qty: $quantity", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                        }
+                                        Text(product.price.toPeso(), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                                    }
+
+                                    Divider()
+                                }
                             }
-                            Text(it.price, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                         }
-                        HorizontalDivider(
-                            Modifier,
-                            DividerDefaults.Thickness,
-                            DividerDefaults.color
-                        )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            // Order summary card
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text("Order Summary", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Spacer(modifier = Modifier.height(12.dp))
 
-            // Order Summary card
-            Card(modifier = Modifier.fillMaxWidth(), shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Order Summary", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                    Spacer(modifier = Modifier.height(12.dp))
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text("Subtotal", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                            Text(order.subtotal.toPeso(), style = MaterialTheme.typography.bodyMedium)
+                        }
 
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Subtotal", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                        Text("₱1,137.74", style = MaterialTheme.typography.bodyMedium)
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Shipping", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                        Text("₱249.99", style = MaterialTheme.typography.bodyMedium)
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-                    HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Total", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        Text("₱1,387.73", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text("Shipping", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                            Text( order.shipping.toPeso(), style = MaterialTheme.typography.bodyMedium)
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Divider()
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text("Total", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                            Text(order.total.toPeso(), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        }
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(120.dp))
         }
+    }
+}
+
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun OrderScreenPreview() {
+    IntimaceTheme {
+        OrderScreen(order = orders[0])
     }
 }

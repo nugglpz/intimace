@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -41,12 +42,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.intimace.data.currentAccount
 import com.intimace.ui.components.AppBottomNav
 import com.intimace.ui.components.SettingsRow
+import com.intimace.uistate.CreateAccountUiState
 
 @Composable
 fun SettingsScreen(
     navController: NavHostController = rememberNavController(),
+    createAccountUiState: CreateAccountUiState,
     onEditProfile: () -> Unit = {},
     onNotifications: () -> Unit = {},
     onPrivacy: () -> Unit = {},
@@ -75,8 +79,8 @@ fun SettingsScreen(
                     }
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
-                        Text("Sarah Johnson", fontWeight = FontWeight.SemiBold)
-                        Text("sarah@example.com", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                        Text(currentAccount.name.ifEmpty { "Lovely Human" }, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Text(currentAccount.name.ifEmpty { "No email added" }, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                     }
                 }
             }
@@ -85,7 +89,7 @@ fun SettingsScreen(
 
             SettingsRow(icon = { Icon(imageVector = Icons.Default.Person, contentDescription = null, tint = Color(0xFF7C3AED)) }, title = "Edit Profile", subtitle = "Personal information & preferences", onClick = onEditProfile)
             Spacer(modifier = Modifier.height(8.dp))
-            SettingsRow(icon = { Icon(imageVector = Icons.Default.Person, contentDescription = null, tint = Color(0xFF7C3AED)) }, title = "Notifications", subtitle = "Manage alerts & reminders", onClick = onNotifications)
+            SettingsRow(icon = { Icon(imageVector = Icons.Default.Notifications, contentDescription = null, tint = Color(0xFF7C3AED)) }, title = "Notifications", subtitle = "Manage alerts & reminders", onClick = onNotifications)
             Spacer(modifier = Modifier.height(8.dp))
             SettingsRow(icon = { Icon(imageVector = Icons.Default.Lock, contentDescription = null, tint = Color(0xFF7C3AED)) }, title = "Privacy & Security", subtitle = "Control data sharing & access", onClick = onPrivacy)
             Spacer(modifier = Modifier.height(8.dp))

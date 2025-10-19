@@ -107,6 +107,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.ui:ui-text-google-fonts")
 
+    implementation("commons-validator:commons-validator:1.7")
 
 
     // Debug / tooling (BOM-managed where possible)

@@ -43,19 +43,20 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.intimace.model.Product
 import com.intimace.ui.components.AppBottomNav
+import com.intimace.ui.screens.shoppingCartPath.toPeso
 
 @Composable
 fun ProductScreen(
     navController: NavHostController = rememberNavController(),
     currentProduct: Product,
-    onAddToCart: (Product) -> Unit = {},
+    onAddToCart: (Product, Double) -> Unit,
+    onOpenCart: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
-    val productId = 1
-    var selectedNav by remember { mutableIntStateOf(3) }
     val scrollState = rememberScrollState()
+    val price = currentProduct.price.toPeso()
 
-    Scaffold() { innerPadding ->
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -69,7 +70,7 @@ fun ProductScreen(
                 }
                 Text("Product Detail", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = { /* open cart */ }) {
+                IconButton(onClick = onOpenCart) {
                     Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Cart")
                 }
             }
@@ -98,16 +99,18 @@ fun ProductScreen(
             // Content card
             Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(stringResource(currentProduct.type), color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodySmall)
+                    Text(currentProduct.type, color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodySmall)
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text(stringResource(currentProduct.name), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text("${currentProduct.quantity} LEFT", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text(stringResource(currentProduct.location), style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    Text(currentProduct.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text("${currentProduct.birthControlHubName} | ${currentProduct.location}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text("₱" + stringResource(currentProduct.price), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                    Text(currentProduct.price.toPeso(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        stringResource(currentProduct.description),
+                        currentProduct.description,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Gray
                     )
@@ -115,7 +118,7 @@ fun ProductScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
-                        onClick = { onAddToCart(currentProduct) },
+                        onClick = { onAddToCart(currentProduct, currentProduct.price) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(52.dp),

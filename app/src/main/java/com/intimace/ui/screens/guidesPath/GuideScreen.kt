@@ -1,5 +1,6 @@
 package com.intimace.ui.screens.guidesPath
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,9 +8,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,19 +38,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.intimace.data.guides
 import com.intimace.ui.components.AppBottomNav
 
 @Composable
 fun GuideScreen(
     navController: NavHostController,
+    guideIndex: Int = 0,
     onBack: () -> Unit = {},
     onToggleBookmark: (Boolean) -> Unit = {}
 ) {
-    val guideId = 1
-    var selectedNav by remember { mutableIntStateOf(2) }
     val scrollState = rememberScrollState()
     var bookmarked by remember { mutableStateOf(false) }
 
@@ -86,7 +92,14 @@ fun GuideScreen(
                     .height(160.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color(0xFFEEEEEE))
-            )
+            ) {
+                Image(
+                    painter = painterResource(guides[guideIndex].img),
+                    modifier = Modifier.fillMaxSize(),
+                    contentDescription = "Product image",
+                    contentScale = ContentScale.Crop
+                )
+            }
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -98,22 +111,13 @@ fun GuideScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     // small category pill
-                    Text("Education", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodySmall)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Understanding Your Cycle", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(guides[guideIndex].title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
                     Spacer(modifier = Modifier.height(8.dp))
                     // multi-paragraph body (sample copy)
-                    val body = """
-                        Understanding your menstrual cycle is key to understanding your overall reproductive health. 
-                        
-                        A typical menstrual cycle lasts about 28 days, but can range from 21 to 35 days. The cycle begins on the first day of your period. During this time, the lining of your uterus sheds, resulting in menstrual bleeding. This phase typically lasts 3–7 days.
-                        
-                        Following your period, your body prepares for ovulation. Estrogen levels rise, causing the lining of your uterus to thicken. Around day 14 of a 28-day cycle, ovulation occurs when an egg is released from one of your ovaries. If the egg isn't fertilized, hormone levels drop, triggering the shedding of the uterine lining, and your cycle begins again.
-                        
-                        Tracking your cycle can help you predict when you'll get your period, identify patterns in symptoms, and better understand your fertility window.
-                    """.trimIndent()
+                    val body = stringResource(guides[guideIndex].description).trimIndent()
 
-                    body.split("\n\n").forEach { para ->
+                    body.split("\n").forEach { para ->
                         Text(para, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
                         Spacer(modifier = Modifier.height(8.dp))
                     }

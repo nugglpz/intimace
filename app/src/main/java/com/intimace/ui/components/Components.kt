@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.intimace.ui.screens.shoppingCartPath.toPeso
 import java.time.LocalTime
 
 
@@ -235,7 +236,33 @@ fun TimePickerTextField(
 
     var showDialog by remember { mutableStateOf(false) }
 
-    // Convert selectedTime (Long) → hour/minute
+    // helper to format millis -> display string
+    fun formatMillis(millis: Long): String {
+        val hours = (millis / 3600000L).toInt()
+        val minutes = ((millis % 3600000L) / 60000L).toInt()
+        val cal = java.util.Calendar.getInstance().apply {
+            set(java.util.Calendar.HOUR_OF_DAY, hours)
+            set(java.util.Calendar.MINUTE, minutes)
+            // zero seconds/millis for a clean representation
+            set(java.util.Calendar.SECOND, 0)
+            set(java.util.Calendar.MILLISECOND, 0)
+        }
+        return timeFormatter.format(cal.time)
+    }
+
+    // visible text state for the text field — kept in sync with selectedTime
+    var displayText by remember {
+        mutableStateOf(
+            selectedTime?.let { formatMillis(it) } ?: ""
+        )
+    }
+
+    // recompute displayText if parent changes selectedTime
+    LaunchedEffect(selectedTime) {
+        displayText = selectedTime?.let { formatMillis(it) } ?: ""
+    }
+
+    // derive initial hour/minute from selectedTime (or now)
     val (initialHour, initialMinute) = remember(selectedTime) {
         if (selectedTime != null) {
             val totalMinutes = (selectedTime / 60000L).toInt()
@@ -246,11 +273,24 @@ fun TimePickerTextField(
         }
     }
 
+    // create time picker state
     val timePickerState = rememberTimePickerState(
         initialHour = initialHour,
         initialMinute = initialMinute,
         is24Hour = is24Hour
     )
+
+    // ensure timePickerState is updated if selectedTime (h/m) changes
+    LaunchedEffect(initialHour, initialMinute) {
+        // many TimePickerState implementations expose mutable hour/minute
+        // update them so the dialog shows the correct initial values
+        try {
+            timePickerState.hour = initialHour
+            timePickerState.minute = initialMinute
+        } catch (_: Exception) {
+            // if the implementation is immutable, ignore — initialHour was used when created
+        }
+    }
 
     if (showDialog) {
         AlertDialog(
@@ -260,9 +300,11 @@ fun TimePickerTextField(
             confirmButton = {
                 TextButton(onClick = {
                     showDialog = false
-                    val totalMillis =
-                        (timePickerState.hour * 60L + timePickerState.minute) * 60_000L
+                    val totalMillis = (timePickerState.hour * 60L + timePickerState.minute) * 60_000L
+                    // notify parent
                     onTimeSelected(totalMillis)
+                    // update local display immediately so the UI reflects selection right away
+                    displayText = formatMillis(totalMillis)
                 }) { Text("OK") }
             },
             dismissButton = {
@@ -273,22 +315,9 @@ fun TimePickerTextField(
         )
     }
 
-    // Convert Long → formatted string for display
-    val formattedTime = remember(selectedTime) {
-        selectedTime?.let {
-            val hours = (it / 3600000L).toInt()
-            val minutes = ((it % 3600000L) / 60000L).toInt()
-            val cal = java.util.Calendar.getInstance().apply {
-                set(java.util.Calendar.HOUR_OF_DAY, hours)
-                set(java.util.Calendar.MINUTE, minutes)
-            }
-            timeFormatter.format(cal.time)
-        } ?: ""
-    }
-
     OutlinedTextField(
-        value = formattedTime,
-        onValueChange = {},
+        value = displayText,
+        onValueChange = {}, // read-only
         readOnly = true,
         label = { Text(label) },
         placeholder = { Text(if (is24Hour) "HH:mm" else "hh:mm AM/PM") },
@@ -300,6 +329,7 @@ fun TimePickerTextField(
         modifier = modifier.clickable { showDialog = true }
     )
 }
+
 
 
 @Composable
@@ -322,12 +352,55 @@ fun QuickActionItem(label: String, icon: ImageVector, modifier: Modifier = Modif
 @Composable
 fun AppBottomNav(
     navController: NavHostController,
-    cartItemCount: Int = 0,
     modifier: Modifier = Modifier
 ) {
     // derive selected index from current destination if you like, else the caller can pass state
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val calendarPath = listOf("calendar")
+    val checkoutPath = listOf("checkout")
+    val createPath = listOf(
+        "createAccount",
+        "welcome1",
+        "welcome2",
+        "welcome3",
+        "welcome4"
+    )
+    val guidesPath = listOf(
+        "guides",
+        "guide"
+    )
+    val homePath = listOf(
+        "home",
+        "logSymptoms"
+    )
+    val loginPath = listOf(
+        "login",
+        "resetPassword"
+    )
+    val orderHistoryPath = listOf(
+        "orders",
+        "order"
+    )
+    val settingsPath = listOf(
+        "settings",
+        "editProfile",
+        "notifications",
+        "privacy",
+        "help",
+        "partnerLink",
+    )
+    val shopPath = listOf(
+        "shop",
+        "product",
+        "cart",
+        "checkout",
+        "orders",
+        "order"
+    )
+
+
 
     NavigationBar(
         tonalElevation = 6.dp,
@@ -351,7 +424,7 @@ fun AppBottomNav(
         NavigationBarItem(
             icon = { Icon(imageVector = Icons.Default.Home, contentDescription = "Home") },
             label = { Text("Home") },
-            selected = currentRoute == "home",
+            selected = currentRoute in homePath,
             onClick = { navigateTo("home") },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = selectedColor,
@@ -363,7 +436,7 @@ fun AppBottomNav(
         NavigationBarItem(
             icon = { Icon(imageVector = Icons.Default.CalendarToday, contentDescription = "Calendar") },
             label = { Text("Calendar") },
-            selected = currentRoute == "calendar",
+            selected = currentRoute in calendarPath,
             onClick = { navigateTo("calendar") },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = selectedColor,
@@ -375,7 +448,7 @@ fun AppBottomNav(
         NavigationBarItem(
             icon = { Icon(imageVector = Icons.Default.Book, contentDescription = "Guides") },
             label = { Text("Guides") },
-            selected = currentRoute == "guides",
+            selected = currentRoute in guidesPath,
             onClick = { navigateTo("guides") },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = selectedColor,
@@ -385,17 +458,9 @@ fun AppBottomNav(
 
         // Shop (with optional badge)
         NavigationBarItem(
-            icon = {
-                if (cartItemCount > 0) {
-                    BadgeBox(count = cartItemCount) {
-                        Icon(imageVector = Icons.Default.LocalMall, contentDescription = "Shop")
-                    }
-                } else {
-                    Icon(imageVector = Icons.Default.LocalMall, contentDescription = "Shop")
-                }
-            },
+            icon = { Icon(imageVector = Icons.Default.LocalMall, contentDescription = "Shop") },
             label = { Text("Shop") },
-            selected = currentRoute == "shop",
+            selected = currentRoute in shopPath,
             onClick = { navigateTo("shop") },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = selectedColor,
@@ -407,7 +472,7 @@ fun AppBottomNav(
         NavigationBarItem(
             icon = { Icon(imageVector = Icons.Default.Person, contentDescription = "Profile") },
             label = { Text("Profile") },
-            selected = currentRoute == "settings" || currentRoute == "profile",
+            selected = currentRoute in settingsPath,
             onClick = { navigateTo("settings") }, // links to SettingsScreen per your request
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = selectedColor,
@@ -462,10 +527,10 @@ private fun BadgeBox(count: Int, content: @Composable () -> Unit) {
 @Composable
 fun ProductCard(
     @DrawableRes img: Int,
-    @StringRes type: Int,
-    @StringRes name: Int,
-    @StringRes location: Int,
-    @StringRes price: Int,
+    type: String,
+    name: String,
+    location: String,
+    price: Double,
     onClick: () -> Unit,
     onAddToCart: () -> Unit
 ) {
@@ -477,7 +542,7 @@ fun ProductCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            // image placeholde
+            // image placeholder
             Box(
                 modifier = Modifier
                     .size(74.dp)
@@ -495,13 +560,13 @@ fun ProductCard(
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(2f)) {
-                Text(stringResource(type), color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodySmall)
+                Text(type, color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodySmall)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(stringResource(name), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(stringResource(location), style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                Text(location, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(stringResource(price), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(price.toPeso(), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.width(12.dp))

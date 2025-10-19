@@ -22,6 +22,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.intimace.data.currentAccount
+import com.intimace.data.guides
+import com.intimace.data.orders
 import com.intimace.ui.components.AppBottomNav
 import com.intimace.ui.components.EmailSentScreen
 import com.intimace.ui.screens.calendarPath.CalendarScreen
@@ -35,7 +38,6 @@ import com.intimace.ui.screens.settingsPath.HelpAndSupportScreen
 import com.intimace.ui.screens.homePath.HomeScreen
 import com.intimace.ui.screens.homePath.LogSymptomsScreen
 import com.intimace.ui.screens.loginPath.LoginScreen
-import com.intimace.ui.screens.settingsPath.NewPartnerLinkScreen
 import com.intimace.ui.screens.settingsPath.NotificationsScreen
 import com.intimace.ui.screens.orderHistoryPath.OrderHistoryScreen
 import com.intimace.ui.screens.orderHistoryPath.OrderScreen
@@ -133,7 +135,7 @@ fun IntimaceApp(
     Scaffold(
         bottomBar = {
             if (!shouldHideBottomBar) {
-                AppBottomNav(navController = navController, cartItemCount = 2)
+                AppBottomNav(navController = navController)
             }
         }
     ) { innerPadding ->
@@ -182,6 +184,7 @@ fun IntimaceApp(
                         onSignIn = { navController.navigate("login") }
                     )
                 }
+
                 composable("resetPassword") {
                     val context = LocalContext.current
                     ResetPasswordScreen(
@@ -191,11 +194,6 @@ fun IntimaceApp(
                             loginViewModel.initializeResetEmail(email)
                             navController.navigate("login")
                         }
-                    ) }
-
-                composable("emailSent") {
-                    EmailSentScreen(
-                        onDone = { navController.navigate("login") }
                     )
                 }
 
@@ -230,10 +228,13 @@ fun IntimaceApp(
                 }
 
                 composable("welcome4") {
-                    FourthWelcomeScreen(onComplete = { isSexuallyActive ->
-                        createAccountViewModel.initializeIsSexuallyActive(isSexuallyActive)
-                        navController.navigate("home")
-                                                     },
+                    val context = LocalContext.current
+                    FourthWelcomeScreen(
+                        onComplete = { isSexuallyActive ->
+                            createAccountViewModel.initializeIsSexuallyActive(isSexuallyActive)
+                            Toast.makeText(context, "Welcome to Intimace!", Toast.LENGTH_SHORT).show()
+                            navController.navigate("home")
+                        },
                         onBack = { navController.popBackStack() },
                         onSkip = { navController.navigate("home") }
                     )
@@ -252,10 +253,12 @@ fun IntimaceApp(
                 }
 
                 composable("logSymptoms") {
+                    val context = LocalContext.current
                     LogSymptomsScreen(
                         navController = navController,
                         onSave = { entryDateMillis, mood, symptoms, bodyTemperature, notes ->
                             logSymptomsViewModel.initializeAll(entryDateMillis, mood, symptoms, bodyTemperature, notes)
+                            Toast.makeText(context, "Symptoms saved.", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()
                         },
                         onBack = { navController.popBackStack() }
@@ -277,7 +280,11 @@ fun IntimaceApp(
                 composable("guides") {
                     GuidesScreen(
                         navController = navController,
-                        onOpenGuide = { /* navController.navigate("guide/1") */ },
+                        guidesList = guides,
+                        onOpenGuide = { index ->
+                            guideViewModel.setGuideIndex(index)
+                            navController.navigate("guide")
+                                      },
                         onBack = { navController.popBackStack() }
                     )
                 }
@@ -285,44 +292,106 @@ fun IntimaceApp(
                 composable("guide") {
                     GuideScreen(
                         navController = navController,
+                        guideIndex = guideUiState.guideIndex,
                         onBack = { navController.popBackStack() }
                     )
                 }
 
                 // Shop + product + cart
                 composable("shop") {
+                    val context = LocalContext.current
                     ShopScreen(
                         navController = navController,
-                        onOpenProduct = { productId -> navController.navigate("product") },
+                        shoppingCartUiState = shoppingCartUiState,
+                        onOpenProduct = { product ->
+                            shopViewModel.setCurrentProduct(product)
+                            navController.navigate("product")
+                                        },
                         onOpenCart = { navController.navigate("cart") },
                         onOpenOrders = { navController.navigate("orders") },
-                        onAddToCart = {}
+                        onAddToCart = { product, price ->
+                            shoppingCartViewModel.addToCart(product, price)
+                            Toast.makeText(context, "Added to cart!", Toast.LENGTH_SHORT).show()
+                        }
                     )
                 }
 
                 composable(
                     route = "product"
                 ) { backStackEntry ->
-                    ProductScreen(currentProduct = shopUiState.currentProduct, navController = navController, onAddToCart = { product -> navController.navigate("cart") }, onBack = { navController.popBackStack() })
+                    val context = LocalContext.current
+                    ProductScreen(
+                        navController = navController,
+                        currentProduct = shopUiState.currentProduct,
+                        onAddToCart = { product, price ->
+                            shoppingCartViewModel.addToCart(product, price)
+                            Toast.makeText(context, "Added to cart!", Toast.LENGTH_SHORT).show()
+                            navController.navigate("cart")
+                                      },
+                        onOpenCart = { navController.navigate("cart") },
+                        onBack = { navController.popBackStack() })
                 }
 
-                composable("cart") { ShoppingCartScreen(navController = navController,onProceedToCheckout = { navController.navigate("checkout") }, onBack = { navController.popBackStack() }) }
+                composable("cart") {
+                    val context = LocalContext.current
+                    ShoppingCartScreen(
+                        navController = navController,
+                        shoppingCartUiState = shoppingCartUiState,
+                        onProceedToCheckout = { navController.navigate("checkout") },
+                        onRemove = { product, price ->
+                            shoppingCartViewModel.removeFromCart(product, price)
+                            Toast.makeText(context, "Product removed from shopping cart.", Toast.LENGTH_SHORT).show()
+                        },
+                        onAdd = { product, price ->
+                            shoppingCartViewModel.addQuantity(product, price)
+                        },
+                        onSubtract = { product, price ->
+                            shoppingCartViewModel.subtractQuantity(product, price)
+                        },
+                        onBack = { navController.popBackStack() }
+                    )
+                }
 
-                composable("checkout") { CheckoutScreen(navController = navController,onBack = { navController.popBackStack() }, onCompletePurchase = { navController.navigate("orders") }) }
+                composable("checkout") {
+                    val context = LocalContext.current
+                    CheckoutScreen(
+                        navController = navController,
+                        shoppingCartUiState = shoppingCartUiState,
+                        onBack = { navController.popBackStack() },
+                        onCompletePurchase = { productsOrdered, subtotal, shipping, total, shipFullName, shipAddress, shipCity, shipPostal, cardNumber, cardExpiry, cardCvv ->
+                            checkoutViewModel.placeOrder(productsOrdered, subtotal, shipping, total, shipFullName, shipAddress, shipCity, shipPostal, cardNumber, cardExpiry, cardCvv)
+                            Toast.makeText(context, "Order placed successfully!", Toast.LENGTH_SHORT).show()
+                            navController.navigate("orders")
+                        }
+                    )
+                }
 
                 composable("orders") {
-                    OrderHistoryScreen(navController = navController,onOpenOrder = { orderId -> navController.navigate("orders/$orderId") }, onBack = { navController.popBackStack() })
+                    orderHistoryViewModel. setOrders(orders)
+                    OrderHistoryScreen(
+                        navController = navController,
+                        orders = orderHistoryUiState.orders,
+                        onOpenOrder = { order ->
+                            orderHistoryViewModel.setCurrentOrder(order)
+                            navController.navigate("order")
+                                      },
+                        onBack = { navController.popBackStack() }
+                    )
                 }
 
-                composable(
-                    route = "order"
-                ) { backStackEntry ->
-                    OrderScreen(navController = navController, onBack = { navController.popBackStack() })
+                composable("order") {
+                    OrderScreen(
+                        navController = navController,
+                        order = orderHistoryUiState.currentOrder,
+                        onBack = { navController.popBackStack() }
+                    )
                 }
 
                 composable("settings") {
+                    val context = LocalContext.current
                     SettingsScreen(
                         navController = navController,
+                        createAccountUiState = createAccountUiState,
                         onEditProfile = { navController.navigate("editProfile") },
                         onNotifications = { navController.navigate("notifications") },
                         onPrivacy = { navController.navigate("privacy") },
@@ -330,6 +399,7 @@ fun IntimaceApp(
                         onHelp = { navController.navigate("help") },
                         onLogout = {
                             navController.navigate("login") {
+                                Toast.makeText(context, "Logging you out...", Toast.LENGTH_SHORT).show()
                                 popUpTo(navController.graph.startDestinationId) { inclusive = true }
                             }
                         }
@@ -337,36 +407,58 @@ fun IntimaceApp(
                 }
 
                 composable("editProfile") {
+                    val context = LocalContext.current
                     EditProfileScreen(
                         navController = navController,
+                        onSave = { name, email, age, avgCycle, periodLength ->
+                            settingsViewModel.editProfile(name, email, age, avgCycle, periodLength)
+                            Toast.makeText(context, "Changes saved!", Toast.LENGTH_SHORT).show()
+                            navController.popBackStack()
+                        },
                         onBack = { navController.popBackStack() }
                     )
                 }
                 composable("notifications") {
                     NotificationsScreen(
                         navController = navController,
+                        settingsUiState = settingsUiState,
+                        onToggle = { setting ->
+                            settingsViewModel.toggleNotificationSetting(setting)
+                        },
+                        onTimePreferenceSelected = { setting, time ->
+                            settingsViewModel.setTimePreferences(setting, time)
+                        },
                         onBack = { navController.popBackStack() }
                     )
                 }
                 composable("privacy") {
                     PrivacyAndSecurityScreen(
                         navController = navController,
+                        settingsUiState = settingsUiState,
+                        onToggle = { setting ->
+                            settingsViewModel.toggleNotificationSetting(setting)
+                        },
                         onBack = { navController.popBackStack() }
                     )
                 }
                 composable("partnerLink") {
+                    val context = LocalContext.current
                     PartnerLinkScreen(
                         navController = navController,
+                        settingsUiState = settingsUiState,
+                        onToggle = { setting ->
+                            settingsViewModel.toggleNotificationSetting(setting)
+                        },
                         onBack = { navController.popBackStack() },
-                        onNewPartner = { navController.navigate("newPartnerLink") }
+                        onUnlink = {
+                            currentAccount.hasPartner = false
+                            Toast.makeText(context, "Partner link removed!", Toast.LENGTH_SHORT).show()
+                            navController.navigate("partnerLink")
+                        }
+
                     )
                 }
-                composable("newPartnerLink") {
-                    NewPartnerLinkScreen(
-                        navController = navController,
-                        onBack = { navController.popBackStack() }
-                    )
-                }
+
                 composable("help") {
                     HelpAndSupportScreen(
                         navController = navController,

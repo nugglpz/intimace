@@ -5,10 +5,11 @@ import androidx.annotation.StringRes
 
 data class Product(
     @DrawableRes val img: Int,
-    @StringRes val type: Int,
-    @StringRes val name: Int,
-    @StringRes val location: Int,
-    @StringRes val price: Int,
-    @StringRes val description: Int,
-    @StringRes val birthControlHubName: Int
+    val type: String,
+    val name: String,
+    val location: String,
+    val price: Double,
+    val quantity: Int,
+    val description: String,
+    val birthControlHubName: String,
 )

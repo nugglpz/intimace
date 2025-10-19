@@ -38,23 +38,22 @@ import com.intimace.ui.components.AppBottomNav
 import com.intimace.ui.components.SettingsRow
 import com.intimace.ui.components.TimePickerTextField
 import com.intimace.ui.components.WhiteOutlinedFieldTrailing
+import com.intimace.uistate.SettingsUiState
+import java.time.Instant
+import java.time.LocalTime
+import java.time.ZoneId
 
 @Composable
 fun NotificationsScreen(
     navController: NavHostController = rememberNavController(),
+    settingsUiState: SettingsUiState,
+    onToggle: (String) -> Unit = {},
+    onTimePreferenceSelected: (String, LocalTime) -> Unit,
     onBack: () -> Unit = {}
 ) {
     var selectedNav by remember { mutableIntStateOf(4) }
     val scroll = rememberScrollState()
 
-    var periodReminder by remember { mutableStateOf(true) }
-    var pillReminder by remember { mutableStateOf(true) }
-    var ovulationAlert by remember { mutableStateOf(true) }
-    var cycleSummary by remember { mutableStateOf(false) }
-    var healthTips by remember { mutableStateOf(true) }
-
-    var periodTime by remember { mutableStateOf("8 PM") }
-    var pillTime by remember { mutableStateOf("8 AM") }
     var entryTimeMillis by remember { mutableStateOf<Long?>(null) }
 
     Scaffold { innerPadding ->
@@ -84,7 +83,7 @@ fun NotificationsScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Text("Get notified when your period is approaching", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                         }
-                        Switch(checked = periodReminder, onCheckedChange = { periodReminder = it })
+                        Switch(checked = settingsUiState.periodReminderEnabled, onCheckedChange = { onToggle("periodReminder") })
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
@@ -93,7 +92,7 @@ fun NotificationsScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Text("Daily reminder to take birth control", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                         }
-                        Switch(checked = pillReminder, onCheckedChange = { pillReminder = it })
+                        Switch(checked = settingsUiState.pillReminderEnabled, onCheckedChange = { onToggle("pillReminder") })
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
@@ -102,7 +101,7 @@ fun NotificationsScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Text("Get notified during fertile window", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                         }
-                        Switch(checked = ovulationAlert, onCheckedChange = { ovulationAlert = it })
+                        Switch(checked = settingsUiState.ovulationAlertEnabled, onCheckedChange = { onToggle("ovulationAlert") })
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
@@ -111,7 +110,7 @@ fun NotificationsScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Text("Weekly summary of your cycle data", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                         }
-                        Switch(checked = cycleSummary, onCheckedChange = { cycleSummary = it })
+                        Switch(checked = settingsUiState.cycleSummaryEnabled, onCheckedChange = { onToggle("cycleSummary") })
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
@@ -120,7 +119,7 @@ fun NotificationsScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Text("Receive health and wellness tips", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                         }
-                        Switch(checked = healthTips, onCheckedChange = { healthTips = it })
+                        Switch(checked = settingsUiState.healthTipsEnabled, onCheckedChange = { onToggle("healthTips") })
                     }
                 }
             }
@@ -135,7 +134,7 @@ fun NotificationsScreen(
                     TimePickerTextField(
                         label = "Period Reminder Time",
                         selectedTime = entryTimeMillis,
-                        onTimeSelected = { entryTimeMillis = it },
+                        onTimeSelected = { onTimePreferenceSelected("periodReminder", it.toLocalTime()) },
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -143,7 +142,7 @@ fun NotificationsScreen(
                     TimePickerTextField(
                         label = "Pill Reminder Time",
                         selectedTime = entryTimeMillis,
-                        onTimeSelected = { entryTimeMillis = it },
+                        onTimeSelected = { onTimePreferenceSelected("pillReminder", it.toLocalTime()) },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -152,4 +151,10 @@ fun NotificationsScreen(
             Spacer(modifier = Modifier.height(120.dp))
         }
     }
+}
+
+fun Long.toLocalTime(): LocalTime {
+    return Instant.ofEpochMilli(this)
+        .atZone(ZoneId.systemDefault())
+        .toLocalTime()
 }

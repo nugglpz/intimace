@@ -43,8 +43,9 @@
     <string name="product_1_bch">Mercury Drug</string>
     <string name="product_2_bch">South Star Drug</string>
     <string name="product_3_bch">Watsons</string>
-    <string name="product_4_bch">MerryMary</string>
-    <string name="order_1_id">ORD-2023-0001</string>
+    <string name="product_4_bch">MerryMart</string>
+
+    <string name="order_1_id">ORD–2023-0001</string>
     <string name="order_1_placement_date">October 5, 2023</string>
     <string name="order_1_status">Delivered</string>
     <string name="order_1_subtotal">1137.74</string>
@@ -52,4 +53,20 @@
     <string name="order_1_total">1387.73</string>
     <string name="order_1_address">123 Main Street, Makati City, Metro Manila, Philippines</string>
     <string name="order_1_tracking_number">TRK123456789PH</string>
+
+    <string name="order_1_timeline_item_1_status">Order Placed</string>
+    <string name="order_1_timeline_item_1_date">October 5, 2023</string>
+    <string name="order_1_timeline_item_1_time">10:30 AM</string>
+
+    <string name="order_1_timeline_item_2_status">Order Confirmed</string>
+    <string name="order_1_timeline_item_2_date">October 5, 2023</string>
+    <string name="order_1_timeline_item_2_time">11:45 AM</string>
+
+    <string name="order_1_timeline_item_3_status">Order Shipped</string>
+    <string name="order_1_timeline_item_3_date">October 6, 2023</string>
+    <string name="order_1_timeline_item_3_time">09:15 AM</string>
+
+    <string name="order_1_timeline_item_4_status">Order Delivered</string>
+    <string name="order_1_timeline_item_4_date">October 7, 2023</string>
+    <string name="order_1_timeline_item_4_time">02:30 PM</string>
 </resources>

@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AllInbox
+import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
@@ -37,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,12 +48,14 @@ import com.intimace.data.products
 import com.intimace.model.Product
 import com.intimace.ui.components.AppBottomNav
 import com.intimace.ui.components.ProductCard
+import com.intimace.uistate.ShoppingCartUiState
 
 @Composable
 fun ShopScreen(
     navController: NavHostController = rememberNavController(),
+    shoppingCartUiState: ShoppingCartUiState,
     onOpenProduct: (Product) -> Unit,
-    onAddToCart: (Product) -> Unit,
+    onAddToCart: (Product, Double) -> Unit,
     onOpenCart: () -> Unit,
     onOpenOrders: () -> Unit
 ) {
@@ -75,25 +79,32 @@ fun ShopScreen(
                 Text("Birth Control Shop", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     // Box icon (orders / packages)
-                    IconButton(onClick = { /* open orders */ }) {
-                        Icon(imageVector = Icons.Default.AllInbox, contentDescription = "Orders (box)")
+                    IconButton(onClick = onOpenOrders) {
+                        Icon(imageVector = Icons.Default.Inventory, contentDescription = "Orders (box)")
                     }
 
                     // cart icon with small red badge (keeps the same look as your screenshot)
                     Box(modifier = Modifier.wrapContentSize()) {
-                        IconButton(onClick = { /* open cart */ }) {
+                        IconButton(onClick = onOpenCart) {
                             Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Cart")
                         }
                         // red circular badge positioned over the cart
-                        Box(
-                            modifier = Modifier
-                                .size(18.dp)
-                                .background(Color(0xFFFF6B6B), CircleShape)
-                                .align(Alignment.TopEnd)
-                                .offset(x = (-6).dp, y = 6.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("2", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                        if (shoppingCartUiState.products.isNotEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .size(18.dp)
+                                    .background(Color(0xFFFF6B6B), CircleShape)
+                                    .align(Alignment.TopEnd)
+                                    .offset(x = (-6).dp, y = 6.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    shoppingCartUiState.products.size.toString(),
+                                    color = Color.White,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 }
@@ -121,15 +132,15 @@ fun ShopScreen(
 
             // Product list
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                products.forEach { p ->
+                products.forEach { product ->
                     ProductCard(
-                        img = p.img,
-                        type = p.type,
-                        name = p.name,
-                        location = p.location,
-                        price = p.price,
-                        onClick = { onOpenProduct(p) },
-                        onAddToCart = { onAddToCart(p) }
+                        img = product.img,
+                        type = product.type,
+                        name = product.name,
+                        location = product.location,
+                        price = product.price,
+                        onClick = { onOpenProduct(product) },
+                        onAddToCart = { onAddToCart(product, product.price) }
                     )
                 }
             }

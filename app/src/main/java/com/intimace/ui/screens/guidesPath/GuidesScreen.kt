@@ -34,19 +34,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.intimace.data.guides
+import com.intimace.model.Guide
 import com.intimace.ui.components.AppBottomNav
+import com.intimace.ui.theme.IntimaceTheme
 
 @Composable
 fun GuidesScreen(
     navController: NavHostController = rememberNavController(),
+    guidesList: List<Guide>,
     onOpenGuide: (Int) -> Unit = {},
     onBack: () -> Unit = {}
 ) {
-    var selectedNav by remember { mutableIntStateOf(2) } // guides index in bottom nav
     val scrollState = rememberScrollState()
 
     Scaffold { innerPadding ->
@@ -60,14 +63,15 @@ fun GuidesScreen(
             Text("Guides", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(12.dp))
 
-            guides.forEach { (id, title, excerpt) ->
+            guidesList.forEachIndexed { id, guide ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                         .clickable { onOpenGuide(id) },
                     shape = RoundedCornerShape(12.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                    onClick = { onOpenGuide(id) }
                 ) {
                     Row(modifier = Modifier
                         .fillMaxWidth()
@@ -83,7 +87,7 @@ fun GuidesScreen(
                         ) {
                             Image(
                                 painter = painterResource(guides[id].img),
-                                modifier = Modifier.size(74.dp),
+                                modifier = Modifier.size(90.dp),
                                 contentDescription = "Product image",
                                 contentScale = ContentScale.Crop
                             )
@@ -96,7 +100,7 @@ fun GuidesScreen(
                         ) {
                             Text(text = stringResource(guides[id].title), style = MaterialTheme.typography.titleMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
                             Spacer(modifier = Modifier.height(6.dp))
-                            Text(text = "Click to find out more.", style = MaterialTheme.typography.bodyMedium, color = Color.Gray, maxLines = 3, overflow = TextOverflow.Ellipsis)
+                            Text(text = stringResource(guides[id].description), style = MaterialTheme.typography.bodyMedium, color = Color.Gray, maxLines = 3, overflow = TextOverflow.Ellipsis)
                         }
                     }
                 }
@@ -104,5 +108,13 @@ fun GuidesScreen(
 
             Spacer(modifier = Modifier.height(120.dp)) // safe spacing for bottom nav
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GuidesScreenPreview() {
+    IntimaceTheme {
+        GuidesScreen(guidesList = guides)
     }
 }

@@ -48,7 +48,8 @@ import com.intimace.ui.components.WhiteOutlinedFieldTrailing
 @Composable
 fun EditProfileScreen(
     navController: NavHostController = rememberNavController(),
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    onSave: (String, String, Int, Int, Int) -> Unit
 ) {
     var selectedNav by remember { mutableIntStateOf(4) }
     val scroll = rememberScrollState()
@@ -59,9 +60,6 @@ fun EditProfileScreen(
     var age by remember { mutableStateOf("") }
     var avgCycle by remember { mutableStateOf("") }
     var periodLength by remember { mutableStateOf("") }
-    var periodReminder by remember { mutableStateOf(true) }
-    var pillReminder by remember { mutableStateOf(true) }
-    var ovulationAlert by remember { mutableStateOf(true) }
 
     Scaffold { innerPadding ->
         Column(modifier = Modifier
@@ -100,7 +98,7 @@ fun EditProfileScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(onClick = { /* save action */ }, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(36.dp)) {
+            Button(onClick = { onSave(name, email, age.toInt(), avgCycle.toInt(), periodLength.toInt()) }, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(36.dp)) {
                 Text("Save Changes")
             }
 

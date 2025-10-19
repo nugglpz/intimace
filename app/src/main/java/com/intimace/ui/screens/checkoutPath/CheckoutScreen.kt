@@ -1,5 +1,6 @@
 package com.intimace.ui.screens.checkoutPath
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,15 +40,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.intimace.model.Order
+import com.intimace.model.Product
 import com.intimace.ui.components.AppBottomNav
 import com.intimace.ui.components.OrderCompleteOverlay
 import com.intimace.ui.components.WhiteOutlinedFieldTrailing
-
+import com.intimace.ui.screens.shoppingCartPath.toPeso
+import com.intimace.uistate.ShoppingCartUiState
+import org.apache.commons.validator.routines.CreditCardValidator
 @Composable
 fun CheckoutScreen(
     navController: NavHostController = rememberNavController(),
+    shoppingCartUiState: ShoppingCartUiState,
     onBack: () -> Unit = {},
-    onCompletePurchase: () -> Unit = {}
+    onCompletePurchase: (List<Pair<Product, Int>>, Double, Double, Double, String, String, String, String, String, String, String) -> Unit
 ) {
     val tabs = listOf("Shipping", "Payment")
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -64,7 +70,7 @@ fun CheckoutScreen(
     // Payment state
     var cardNumber by remember { mutableStateOf("") }
     var cardExpiry by remember { mutableStateOf("") }
-    var cardCvc by remember { mutableStateOf("") }
+    var cardCvv by remember { mutableStateOf("") }
 
     Scaffold() { innerPadding ->
         Column(
@@ -156,8 +162,8 @@ fun CheckoutScreen(
                                 modifier = Modifier.weight(1f)
                             )
                             WhiteOutlinedFieldTrailing(
-                                value = cardCvc,
-                                onValueChange = { cardCvc = it },
+                                value = cardCvv,
+                                onValueChange = { cardCvv = it },
                                 labelText = "CVC",
                                 placeholderText = "e.g. 123",
                                 modifier = Modifier.weight(1f)
@@ -168,12 +174,12 @@ fun CheckoutScreen(
                         Spacer(modifier = Modifier.height(12.dp))
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             Text("Subtotal", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                            Text("₱1,137.74", style = MaterialTheme.typography.bodyMedium)
+                            Text(shoppingCartUiState.subtotal.toPeso(), style = MaterialTheme.typography.bodyMedium)
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             Text("Shipping", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                            Text("₱249.99", style = MaterialTheme.typography.bodyMedium)
+                            Text(shoppingCartUiState.shipping.toPeso(), style = MaterialTheme.typography.bodyMedium)
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         HorizontalDivider(
@@ -184,13 +190,17 @@ fun CheckoutScreen(
                         Spacer(modifier = Modifier.height(12.dp))
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             Text("Total", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Text("₱1,387.73", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                            Text(shoppingCartUiState.total.toPeso(), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
-                            onClick = { showOrderComplete = true; onCompletePurchase() },
+                            onClick = {
+                                showOrderComplete = true
+                                onCompletePurchase(shoppingCartUiState.products, shoppingCartUiState.subtotal, shoppingCartUiState.shipping, shoppingCartUiState.total, shipFullName, shipAddress, shipCity, shipPostal, cardNumber, cardExpiry, cardCvv)
+                                      },
                             modifier = Modifier.fillMaxWidth().height(52.dp),
-                            shape = RoundedCornerShape(36.dp)
+                            shape = RoundedCornerShape(36.dp),
+                            enabled = shipFullName.isNotEmpty() && shipAddress.isNotEmpty() && shipCity.isNotEmpty() && shipPostal.isNotEmpty() && isCardNumberValid(cardNumber) && isExpiryDateValid(cardExpiry) && isCvvValid(cardCvv)
                         ) {
                             Text("Complete Purchase", color = MaterialTheme.colorScheme.onPrimary)
                         }
@@ -205,4 +215,37 @@ fun CheckoutScreen(
     if (showOrderComplete) {
         OrderCompleteOverlay(onDismiss = { showOrderComplete = false })
     }
+}
+
+fun isCardNumberValid(input: String): Boolean {
+    val validator = CreditCardValidator()
+    if (!validator.isValid(input)) {
+        Log.e("validation", "CARD NUMBER VALIDATION FAILED")
+        return false
+    } else {
+        Log.d("validation", "CARD NUMBER VALIDATION SUCCESS")
+        return true
+    }
+}
+
+fun isExpiryDateValid(input: String): Boolean {
+    val expiryDatePattern = Regex("^(\\d{1,2})/(\\d{2})$")
+    val match = expiryDatePattern.find(input.trim()) ?: return false
+
+    val month = match.groupValues[1].toIntOrNull() ?: return false
+    val year2 = match.groupValues[2].toIntOrNull() ?: return false
+
+    // month must be 1..12
+    if (month !in 1..12) return false
+
+    // Accept two-digit years 00..99 (adjust policy as needed)
+    if (year2 !in 0..99) return false
+
+    return true
+}
+
+
+fun isCvvValid(input: String): Boolean {
+    val cvvPattern = Regex("^\\d{3}\$")
+    return cvvPattern.matches(input)
 }
