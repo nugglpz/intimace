@@ -71,6 +71,10 @@ fun GuidesScreen(
                         .clickable { onOpenGuide(id) },
                     shape = RoundedCornerShape(12.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
                     onClick = { onOpenGuide(id) }
                 ) {
                     Row(modifier = Modifier
@@ -98,9 +102,9 @@ fun GuidesScreen(
                         Column(modifier = Modifier
                             .fillMaxWidth()
                         ) {
-                            Text(text = stringResource(guides[id].title), style = MaterialTheme.typography.titleMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                            Text(text = stringResource(guides[id].title), style = MaterialTheme.typography.titleMedium, color = Color.Green, fontWeight = FontWeight.SemiBold, maxLines = 2, overflow = TextOverflow.Ellipsis)
                             Spacer(modifier = Modifier.height(6.dp))
-                            Text(text = stringResource(guides[id].description), style = MaterialTheme.typography.bodyMedium, color = Color.Gray, maxLines = 3, overflow = TextOverflow.Ellipsis)
+                            Text(text = stringResource(guides[id].description), style = MaterialTheme.typography.bodyMedium, color = Color.White, maxLines = 3, overflow = TextOverflow.Ellipsis)
                         }
                     }
                 }

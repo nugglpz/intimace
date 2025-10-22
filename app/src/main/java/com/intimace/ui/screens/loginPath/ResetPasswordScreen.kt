@@ -60,7 +60,10 @@ fun ResetPasswordScreen(
                     .fillMaxWidth()
                     .weight(1f),
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                )
             ) {
                 Column(modifier = Modifier
                     .fillMaxSize()

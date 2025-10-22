@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,9 +34,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.intimace.ui.components.BottomNavigationControls
 import com.intimace.ui.components.DatePickerTextField
+import com.intimace.uistate.CreateAccountUiState
 
 @Composable
 fun ThirdWelcomeScreen(
+    createAccountUiState: CreateAccountUiState,
     onContinue: (Boolean?, String?, Long?) -> Unit,
     onBack: () -> Unit,
     onSkip: () -> Unit
@@ -46,9 +49,9 @@ fun ThirdWelcomeScreen(
             .padding(24.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        var isRegular: Boolean? by remember { mutableStateOf(null) }
-        var averageCycleDays: String? by remember { mutableStateOf("") }
-        var firstDayOfLastPeriodMillis: Long? by remember { mutableStateOf(null) }
+        var isRegular: Boolean? by remember { mutableStateOf(createAccountUiState.isRegular) }
+        var averageCycleDays: String? by remember { mutableStateOf(createAccountUiState.averageCycleDays.toString()) }
+        var firstDayOfLastPeriodMillis: Long? by remember { mutableStateOf(createAccountUiState.firstDayOfLastPeriod?.toEpochDay()) }
 
 
         Column {

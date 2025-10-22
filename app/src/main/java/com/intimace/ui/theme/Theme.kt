@@ -278,4 +278,3 @@ fun IntimaceTheme(
         content = content
     )
 }
-

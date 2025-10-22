@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocalMall
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -39,8 +40,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.intimace.data.currentAccount
 import com.intimace.ui.components.AppBottomNav
 import com.intimace.ui.components.QuickActionItem
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun HomeScreen(
@@ -52,6 +57,8 @@ fun HomeScreen(
     onProfile: () -> Unit = {}
 ) {
     var selectedNav by remember { mutableIntStateOf(0) }
+    val name = currentAccount.name.ifEmpty { "Lovely Human" }
+
 
     Scaffold() { innerPadding ->
         // body content scrolls independently; bottomBar remains fixed
@@ -66,8 +73,8 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             // Greeting
-            Text("Hi, Cassie", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-            Text("Friday, September 19", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+            Text("Hi, $name!", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+            Text("${LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy", Locale.ENGLISH))}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             Spacer(modifier = Modifier.height(12.dp))
 
             // Tip card
@@ -75,12 +82,15 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFF6ECFF))
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Just the Tip", fontWeight = FontWeight.Medium)
+                    Text("Just the Tip", fontWeight = FontWeight.Medium, style = MaterialTheme.typography.titleLarge)
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text("Remember to take your birth control pill today at 9:00 PM", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                    Text("Remember to take your birth control pill today at 9:00 PM", style = MaterialTheme.typography.bodyMedium)
                 }
             }
 
@@ -90,19 +100,32 @@ fun HomeScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                        Text("Cycle Day 14", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Text("Cycle Day 14", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Calendar", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Icon(imageVector = Icons.Default.CalendarToday, contentDescription = "Calendar")
+                            Button(onClick = onCalendar ) {
+                                Text(
+                                    "Calendar",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Icon(
+                                    imageVector = Icons.Default.CalendarToday,
+                                    contentDescription = "Calendar"
+                                )
+                            }
                         }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text("Fertility today", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    Text("Fertility today", style = MaterialTheme.typography.bodySmall, color = Color.Green)
                     Spacer(modifier = Modifier.height(6.dp))
                     // Simple progress bar showing phases (visual only)
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -121,15 +144,16 @@ fun HomeScreen(
                             }
                         }
                     }
+                    val nextPeriod = currentAccount.firstDayOfLastPeriod?.plusDays(30)?.format(DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH))?.ifEmpty { LocalDate.now().plusDays(14).format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy", Locale.ENGLISH)) }
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Next period expected on October 3", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    Text("Next period expected on ${nextPeriod}", style = MaterialTheme.typography.bodySmall, color = Color.White, fontWeight = FontWeight.Bold)
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Quick Actions grid (2 columns)
-            Text("Quick Actions", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text("Quick Actions", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(8.dp))
             Column {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -147,16 +171,22 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Recent insights card
-            Text("Recent Insights", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text("Recent Insights", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(8.dp))
-            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp)) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                )
+            ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Your cycle patterns", fontWeight = FontWeight.Medium)
+                    Text("Your cycle patterns", fontWeight = FontWeight.Medium, style = MaterialTheme.typography.titleMedium)
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         "Your last 3 cycles were consistent at 28–29 days. This regularity helps predict future cycles more accurately.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
                     )
                 }
             }

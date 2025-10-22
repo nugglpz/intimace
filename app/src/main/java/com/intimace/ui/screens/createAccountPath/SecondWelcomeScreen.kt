@@ -32,10 +32,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.intimace.ui.components.BottomNavigationControls
+import com.intimace.uistate.Sex
 
 @Composable
 fun SecondWelcomeScreen(
-    onContinue: (String, Int, String) -> Unit,
+    onContinue: (String, Int?, String) -> Unit,
     onBack: () -> Unit,
     onSkip: () -> Unit
 ) {
@@ -48,6 +49,10 @@ fun SecondWelcomeScreen(
             .padding(24.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+        var name by remember { mutableStateOf("") }
+        var age by remember { mutableStateOf("") }
+        var sex by remember { mutableStateOf("") }
+
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Button(onClick = onBack) {
@@ -64,9 +69,7 @@ fun SecondWelcomeScreen(
             OutlinedTextField(value = name, onValueChange = {name = it}, placeholder = { Text("How should we call you?") }, label = { Text("Name (optional)") }, modifier = Modifier.fillMaxWidth())
             Spacer(Modifier.height(12.dp))
 
-            OutlinedTextField(value = age, onValueChange = {age = it}, placeholder = { Text("Your age") }, label = { Text("Age") }, modifier = Modifier.fillMaxWidth(), keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            ),)
+            OutlinedTextField(value = age, onValueChange = {age = it}, placeholder = { Text("Your age") }, label = { Text("Age") }, modifier = Modifier.fillMaxWidth(), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
             Spacer(Modifier.height(12.dp))
 
             Row(
@@ -123,6 +126,6 @@ fun SecondWelcomeScreen(
 
         }
 
-        BottomNavigationControls(step = 2, totalSteps = 4, onContinue = { onContinue(name, age.toInt(), sex) }, onSkip = onSkip)
+        BottomNavigationControls(step = 2, totalSteps = 4, onContinue = { onContinue(name, age.toIntOrNull(), sex) }, onSkip = onSkip)
     }
 }

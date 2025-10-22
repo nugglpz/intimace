@@ -56,7 +56,6 @@ fun CreateAccountScreen(
                 .weight(1f)
                 .shadow(2.dp, RoundedCornerShape(12.dp)),
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column(modifier = Modifier
                     .fillMaxSize()
@@ -122,7 +121,7 @@ fun CreateAccountScreen(
                         password = password,
                         onPasswordChange = {
                             password = it
-                            passwordError = if (it.isNotEmpty()) {
+                            passwordError = if (it.isEmpty()) {
                                 "Please enter a non-empty password."
                             } else null
                         },
@@ -144,7 +143,7 @@ fun CreateAccountScreen(
                         password = confirmPassword,
                         onPasswordChange = {
                             confirmPassword = it
-                            confirmPasswordError = if (it.isNotEmpty() && validatePasswordAndConfirmationPassword()) {
+                            confirmPasswordError = if (it.isNotEmpty() && !validatePasswordAndConfirmationPassword()) {
                                 "Please enter a non-empty confirmation password."
                             } else null
                         },

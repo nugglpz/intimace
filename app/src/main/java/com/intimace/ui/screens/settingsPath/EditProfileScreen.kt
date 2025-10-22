@@ -78,7 +78,7 @@ fun EditProfileScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             // Personal Information
-            Text("Personal Information", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            Text("Personal Information", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(8.dp))
 
             WhiteOutlinedFieldTrailing(value = name, onValueChange = { name = it }, labelText = "Name", placeholderText = "Your updated name")
@@ -90,7 +90,7 @@ fun EditProfileScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             // Cycle Information
-            Text("Cycle Information", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            Text("Cycle Information", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(8.dp))
             WhiteOutlinedFieldTrailing(value = avgCycle, onValueChange = { avgCycle = it }, labelText = "Average Cycle Length (days)", placeholderText = "Your new ave. cycle length")
             Spacer(modifier = Modifier.height(8.dp))

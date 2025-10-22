@@ -68,11 +68,16 @@ fun SettingsScreen(
             .padding(innerPadding)
             .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
-            Text("Settings", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
+            Text("Settings", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(12.dp))
 
             // profile card
-            Card(shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp), modifier = Modifier.fillMaxWidth()) {
+            Card(shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp), modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                )
+            ) {
                 Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                     Box(modifier = Modifier.size(64.dp).clip(CircleShape).background(Color(0xFFF3E9FF)), contentAlignment = Alignment.Center) {
                         Icon(imageVector = Icons.Default.Person, contentDescription = "avatar", tint = Color(0xFF7C3AED))

@@ -88,7 +88,11 @@ fun OrderHistoryScreen(
                         .fillMaxWidth()
                         .clickable { onOpenOrder(order) },
                     shape = RoundedCornerShape(12.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
                 ) {
                     Row(
                         modifier = Modifier
@@ -122,7 +126,7 @@ fun OrderHistoryScreen(
                                 // NOTE: stringResource requires Int @StringRes. If order.orderId is a String, drop stringResource().
                                 Text(
                                     text = order.orderId,
-                                    style = MaterialTheme.typography.titleMedium,
+                                    style = MaterialTheme.typography.bodyLarge,
                                     fontWeight = FontWeight.SemiBold,
                                     textAlign = TextAlign.Center
                                 )
@@ -147,14 +151,15 @@ fun OrderHistoryScreen(
                             Text(
                                 text = order.placementDate.format(dateFormatter),
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Color.Gray
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
                             )
 
                             Spacer(modifier = Modifier.height(8.dp))
 
                             Text(
                                 text = order.total.toPeso(),
-                                style = MaterialTheme.typography.titleMedium,
+                                style = MaterialTheme.typography.bodyLarge,
                                 fontWeight = FontWeight.Bold
                             )
 
@@ -163,9 +168,9 @@ fun OrderHistoryScreen(
                             // small item list preview
                             order.productsOrdered.take(2).forEach { (item, quantity) ->
                                 Text(
-                                    text = item.name,
+                                    text = "${quantity}x ${item.name}",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = Color.Gray
+                                    color = Color.White
                                 )
                             }
                         }

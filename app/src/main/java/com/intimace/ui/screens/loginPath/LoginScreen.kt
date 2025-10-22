@@ -57,7 +57,6 @@ fun LoginScreen(
                     .weight(1f)
                     .shadow(2.dp, RoundedCornerShape(12.dp)),
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column(
                     modifier = Modifier

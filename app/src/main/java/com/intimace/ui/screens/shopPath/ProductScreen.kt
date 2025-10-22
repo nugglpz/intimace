@@ -68,7 +68,7 @@ fun ProductScreen(
                 IconButton(onClick = { onBack() }) {
                     Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                 }
-                Text("Product Detail", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text("Product Detail", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = onOpenCart) {
                     Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Cart")
@@ -97,22 +97,27 @@ fun ProductScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             // Content card
-            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)) {
+            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                )
+            ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(currentProduct.type, color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodySmall)
+                    Text(currentProduct.type, color = Color.Yellow, style = MaterialTheme.typography.bodySmall)
                     Spacer(modifier = Modifier.height(6.dp))
                     Text("${currentProduct.quantity} LEFT", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text(currentProduct.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text(currentProduct.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text("${currentProduct.birthControlHubName} | ${currentProduct.location}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    Text("${currentProduct.birthControlHubName} | ${currentProduct.location}", style = MaterialTheme.typography.bodySmall, color = Color.Green)
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text(currentProduct.price.toPeso(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                    Text(currentProduct.price.toPeso(), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         currentProduct.description,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
+                        color = Color.White
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))

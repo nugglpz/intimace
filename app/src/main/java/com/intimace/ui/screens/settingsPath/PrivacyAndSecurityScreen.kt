@@ -124,7 +124,11 @@ fun PrivacyAndSecurityScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
-                elevation = CardDefaults.cardElevation(6.dp)
+                elevation = CardDefaults.cardElevation(6.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             ) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Row(
@@ -197,7 +201,7 @@ fun PrivacyAndSecurityScreen(
                 Column(modifier = Modifier.padding(12.dp)) {
                     Text(
                         "Change PIN",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -228,7 +232,7 @@ fun PrivacyAndSecurityScreen(
                 Column(modifier = Modifier.padding(12.dp)) {
                     Text(
                         "Data Management",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.height(8.dp))

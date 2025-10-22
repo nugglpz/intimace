@@ -16,17 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.intimace.data.currentAccount
 import com.intimace.data.guides
 import com.intimace.data.orders
 import com.intimace.ui.components.AppBottomNav
-import com.intimace.ui.components.EmailSentScreen
 import com.intimace.ui.screens.calendarPath.CalendarScreen
 import com.intimace.ui.screens.checkoutPath.CheckoutScreen
 import com.intimace.ui.screens.createAccountPath.CreateAccountScreen
@@ -218,6 +215,7 @@ fun IntimaceApp(
 
                 composable("welcome3") {
                     ThirdWelcomeScreen(
+                        createAccountUiState = createAccountUiState,
                         onContinue = { isRegular, averageCycleDays, firstDayOfLastPeriod ->
                             createAccountViewModel.initializeIsRegularAverageCycleDaysFirstDayOfLastPeriod(isRegular, averageCycleDays, firstDayOfLastPeriod)
                             navController.navigate("welcome4")

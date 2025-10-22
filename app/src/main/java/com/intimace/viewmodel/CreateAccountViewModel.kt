@@ -2,13 +2,11 @@ package com.intimace.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.intimace.data.currentAccount
-import com.intimace.uistate.CalendarUiState
 import com.intimace.uistate.CreateAccountUiState
 import com.intimace.uistate.Sex
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import java.time.LocalDate
 import java.time.Instant
 import java.time.ZoneId
 
@@ -25,7 +23,7 @@ class CreateAccountViewModel : ViewModel() {
         )
     }
 
-    fun initializeNameAgeSex(name: String, age: Int, sex: String): Unit {
+    fun initializeNameAgeSex(name: String, age: Int?, sex: String): Unit {
         val sexValue = if (sex == "male") Sex.MALE else Sex.FEMALE
         _createAccountUiState.value = _createAccountUiState.value.copy(
             name = name,
@@ -37,7 +35,7 @@ class CreateAccountViewModel : ViewModel() {
     fun initializeIsRegularAverageCycleDaysFirstDayOfLastPeriod(isRegular: Boolean?, averageCycleDays: String?, firstDayOfLastPeriodMillis: Long?): Unit {
         _createAccountUiState.value = _createAccountUiState.value.copy(
             isRegular = isRegular,
-            averageCycleDays = averageCycleDays?.toInt(),
+            averageCycleDays = averageCycleDays?.toIntOrNull(),
             firstDayOfLastPeriod = if (firstDayOfLastPeriodMillis != null) {Instant.ofEpochMilli(firstDayOfLastPeriodMillis)
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate()} else null

@@ -100,7 +100,11 @@ fun OrderScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(
@@ -117,11 +121,12 @@ fun OrderScreen(
                                 )
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Row {
-                                    Text("Placed on", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                    Text("Placed on", style = MaterialTheme.typography.bodySmall, color = Color.White, fontWeight = FontWeight.Bold)
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text = order.placementDate.format(dateFormatter),
-                                        style = MaterialTheme.typography.bodySmall
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = Color.Green
                                     )
                                 }
                             }
@@ -142,7 +147,7 @@ fun OrderScreen(
 
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        Text("Order Timeline", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Text("Order Timeline", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
                         Spacer(modifier = Modifier.height(12.dp))
 
                         // timeline - use Column with forEachIndexed (safe, small lists)
@@ -184,9 +189,9 @@ fun OrderScreen(
                                         )
                                         Spacer(modifier = Modifier.height(6.dp))
                                         Row {
-                                            Text(step.date.format(dateFormatter), style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                            Text(step.date.format(dateFormatter), style = MaterialTheme.typography.bodySmall, color = Color.Green)
                                             Spacer(modifier = Modifier.width(12.dp))
-                                            Text(text = step.time.format(timeFormatter), style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                            Text(text = step.time.format(timeFormatter), style = MaterialTheme.typography.bodySmall, color = Color.Green)
                                         }
                                     }
                                 }
@@ -198,7 +203,7 @@ fun OrderScreen(
                         Divider()
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        Text("Delivery Information", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Text("Delivery Information", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -212,8 +217,8 @@ fun OrderScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(imageVector = Icons.Default.LocalShipping, contentDescription = "Tracking")
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("Tracking Number: ", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                            Text(text = order.trackingNumber, style = MaterialTheme.typography.bodySmall)
+                            Text("Tracking Number: ", style = MaterialTheme.typography.bodySmall, color = Color.White)
+                            Text(text = order.trackingNumber, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
@@ -224,10 +229,14 @@ fun OrderScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
                 ) {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text("Order Items", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Text("Order Items", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
 
                         // Items list: use Column + forEach (safe for small order lists)
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -274,10 +283,14 @@ fun OrderScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Order Summary", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Text("Order Summary", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

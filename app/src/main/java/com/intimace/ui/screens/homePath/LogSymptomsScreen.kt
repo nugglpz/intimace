@@ -100,7 +100,10 @@ fun LogSymptomsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 elevation = CardDefaults.cardElevation(6.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFF6ECFF))
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             ) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Text("How are you feeling today?", fontWeight = FontWeight.Medium)

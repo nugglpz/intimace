@@ -72,7 +72,7 @@ fun GuideScreen(
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Guide Detail", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    Text("Guide Detail", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.SemiBold)
                 }
 
                 IconButton(onClick = {
@@ -107,18 +107,22 @@ fun GuideScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     // small category pill
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(stringResource(guides[guideIndex].title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(guides[guideIndex].title), style = MaterialTheme.typography.titleLarge, color = Color.Green, fontWeight = FontWeight.SemiBold)
                     Spacer(modifier = Modifier.height(8.dp))
                     // multi-paragraph body (sample copy)
                     val body = stringResource(guides[guideIndex].description).trimIndent()
 
                     body.split("\n").forEach { para ->
-                        Text(para, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                        Text(para, style = MaterialTheme.typography.bodyMedium, color = Color.White)
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }

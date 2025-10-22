@@ -82,7 +82,12 @@ fun PartnerLinkScreen(
                 SettingsRow(icon = { Icon(imageVector = Icons.Default.Link, contentDescription = null, tint = Color(0xFF7C3AED)) }, title = "Partner Sharing", subtitle = "Control what information is shared with your connected partner", onClick = null, showArrow = false)
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp)) {
+                Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    )
+                ) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text("Connected Partner", fontWeight = FontWeight.Medium)
                         Spacer(modifier = Modifier.height(8.dp))
@@ -108,9 +113,14 @@ fun PartnerLinkScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // Information sharing toggles
-                Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp)) {
+                Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    )
+                ) {
                     Column(modifier = Modifier.padding(12.dp)) {
-                        Text("Information Sharing", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Text("Information Sharing", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
                         Spacer(modifier = Modifier.height(12.dp))
 
                         var cyclePredictionSharing by remember { mutableStateOf(true) }
@@ -185,11 +195,21 @@ fun PartnerLinkScreen(
                     Text("Share your cycle information with a trusted partner to help them stay informed about your reproductive health.", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp)) {
+                    Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    ) {
                         Column(modifier = Modifier.padding(12.dp)) {
                             Text("Your Invite Code", fontWeight = FontWeight.Medium)
                             Spacer(modifier = Modifier.height(8.dp))
-                            Card(shape = RoundedCornerShape(8.dp), modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(0.dp)) {
+                            Card(shape = RoundedCornerShape(8.dp), modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(0.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                                    contentColor = MaterialTheme.colorScheme.onSurface
+                                )
+                            ) {
                                 Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                                     Text(inviteCode, modifier = Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
                                     IconButton(onClick = { /* copy to clipboard */ }) {
@@ -207,7 +227,12 @@ fun PartnerLinkScreen(
                     Text("Link with your partner to stay informed about her reproductive health.", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp)) {
+                    Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    ) {
                         Column(modifier = Modifier.padding(12.dp)) {
                             Text("Enter Partner's Code", fontWeight = FontWeight.Medium)
                             Spacer(modifier = Modifier.height(8.dp))

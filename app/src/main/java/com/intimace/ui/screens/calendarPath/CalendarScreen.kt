@@ -79,7 +79,12 @@ fun CalendarScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             // Calendar card
-            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp)) {
+            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                )
+            ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     // Month header
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
@@ -110,7 +115,7 @@ fun CalendarScreen(
             Spacer(modifier = Modifier.height(18.dp))
 
             // Legend and forecast card
-            Text("Legend", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text("Legend", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(8.dp))
             Column {
                 // small legend items
@@ -131,26 +136,31 @@ fun CalendarScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp)) {
+            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+            ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Fertility Forecast", fontWeight = FontWeight.Medium)
+                    Text("Fertility Forecast", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(modifier = Modifier.size(10.dp).clip(RoundedCornerShape(5.dp)).background(Color(0xFFFF6B6B)))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("High chance of pregnancy: ${monthName(month)} 13-15")
+                        Text("High chance of pregnancy: ${monthName(month)} 13-15", style = MaterialTheme.typography.bodyMedium)
                     }
                     Spacer(modifier = Modifier.height(6.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(modifier = Modifier.size(10.dp).clip(RoundedCornerShape(5.dp)).background(Color(0xFFFFC857)))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Medium chance of pregnancy: ${monthName(month)} 12, 16")
+                        Text("Medium chance of pregnancy: ${monthName(month)} 12, 16", style = MaterialTheme.typography.bodyMedium)
                     }
                     Spacer(modifier = Modifier.height(6.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(modifier = Modifier.size(10.dp).clip(RoundedCornerShape(5.dp)).background(Color(0xFF5BD078)))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Low chance of pregnancy: ${monthName(month)} 1-11, 17-31")
+                        Text("Low chance of pregnancy: ${monthName(month)} 1-11, 17-31", style = MaterialTheme.typography.bodyMedium)
                     }
                 }
             }
@@ -223,7 +233,7 @@ fun MonthCalendar(year: Int, monthZeroBased: Int) {
                             colors = CardDefaults.cardColors(containerColor = bgForDay(day))
                         ) {
                             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Text(text = day.toString(), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(6.dp))
+                                Text(text = day.toString(), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(6.dp), color = Color.DarkGray)
                             }
                         }
                     } else {

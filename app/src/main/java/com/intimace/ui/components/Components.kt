@@ -339,7 +339,11 @@ fun QuickActionItem(label: String, icon: ImageVector, modifier: Modifier = Modif
             .height(96.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        )
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()) {
             Icon(imageVector = icon, contentDescription = label, tint = MaterialTheme.colorScheme.primary)
@@ -498,7 +502,8 @@ fun SymptomChip(
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent,
             contentColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-        )
+        ),
+        shape = RoundedCornerShape(8.dp)
     ) {
         Text(label)
     }
@@ -539,7 +544,11 @@ fun ProductCard(
             .fillMaxWidth()
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+        )
     ) {
         Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             // image placeholder
@@ -560,13 +569,13 @@ fun ProductCard(
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(2f)) {
-                Text(type, color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodySmall)
+                Text(type, color = Color.Yellow, style = MaterialTheme.typography.bodySmall)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(location, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                Text(location, style = MaterialTheme.typography.bodySmall, color = Color.Green)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(price.toPeso(), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(price.toPeso(), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -596,8 +605,7 @@ fun WhiteOutlinedFieldTrailing(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         OutlinedTextField(
             value = value,
@@ -626,7 +634,11 @@ fun OrderCompleteDialogContent(onDismiss: () -> Unit) {
     Card(
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier.padding(24.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+        )
     ) {
         Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Box(
@@ -667,7 +679,11 @@ fun SettingsRow(
         modifier = modifier
             .fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     ) {
         Row(
             modifier = Modifier
@@ -692,7 +708,7 @@ fun SettingsRow(
                 Text(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
                 if (!subtitle.isNullOrEmpty()) {
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(subtitle, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    Text(subtitle, style = MaterialTheme.typography.bodySmall, color = Color.White)
                 }
             }
             if (trailingContent != null) {
