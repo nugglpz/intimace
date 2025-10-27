@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -46,6 +47,8 @@ import com.intimace.data.currentAccount
 import com.intimace.ui.components.AppBottomNav
 import com.intimace.ui.components.SettingsRow
 import com.intimace.uistate.CreateAccountUiState
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 
 @Composable
 fun SettingsScreen(
@@ -74,7 +77,7 @@ fun SettingsScreen(
             // profile card
             Card(shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp), modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onTertiaryContainer
                 )
             ) {
@@ -84,8 +87,8 @@ fun SettingsScreen(
                     }
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
-                        Text(currentAccount.name.ifEmpty { "Lovely Human" }, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                        Text(currentAccount.name.ifEmpty { "No email added" }, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                        Text(currentAccount.name.ifEmpty { "Lovely Human" }, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = Color.White)
+                        Text(currentAccount.name.ifEmpty { "No email added" }, style = MaterialTheme.typography.bodySmall, color = Color.LightGray)
                     }
                 }
             }
@@ -116,4 +119,24 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(120.dp))
         }
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun SettingsScreenPreview() {
+    val dummyState = CreateAccountUiState(
+        name = "John Doe",
+        email = "john.doe@example.com"
+    )
+
+    SettingsScreen(
+        navController = rememberNavController(),
+        createAccountUiState = dummyState,
+        onEditProfile = {},
+        onNotifications = {},
+        onPrivacy = {},
+        onPartnerLink = {},
+        onHelp = {},
+        onLogout = {}
+    )
 }

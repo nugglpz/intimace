@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -101,7 +102,7 @@ fun CheckoutScreen(
 
             Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.onTertiaryContainer
                 )
             ) {
@@ -254,3 +255,44 @@ fun isCvvValid(input: String): Boolean {
     val cvvPattern = Regex("^\\d{3}\$")
     return cvvPattern.matches(input)
 }
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun CheckoutScreenPreview() {
+    val sampleProducts = listOf(
+        Product(
+            img = 0, // or R.drawable.sample if available
+            type = "Menstrual",
+            name = "Menstrual Cup",
+            location = "Makati",
+            price = 1499.99,
+            quantity = 1,
+            description = "Reusable and eco-friendly menstrual cup.",
+            birthControlHubName = "Mercury Drug"
+        ),
+        Product(
+            img = 0,
+            type = "Wellness",
+            name = "Heating Pad",
+            location = "Baguio",
+            price = 999.99,
+            quantity = 1,
+            description = "For cramps and comfort.",
+            birthControlHubName = "Watsons"
+        )
+    )
+
+    val sampleCartState = ShoppingCartUiState(
+        products = sampleProducts.map { it to 1 },
+        subtotal = 2499.98,
+        shipping = 50.0,
+        total = 2549.98
+    )
+
+    CheckoutScreen(
+        shoppingCartUiState = sampleCartState,
+        onBack = {},
+        onCompletePurchase = { _, _, _, _, _, _, _, _, _, _, _ -> }
+    )
+}
+

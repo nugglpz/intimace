@@ -708,7 +708,7 @@ fun SettingsRow(
                 Text(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
                 if (!subtitle.isNullOrEmpty()) {
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(subtitle, style = MaterialTheme.typography.bodySmall, color = Color.White)
+                    Text(subtitle, style = MaterialTheme.typography.bodySmall, color = Color.Black)
                 }
             }
             if (trailingContent != null) {

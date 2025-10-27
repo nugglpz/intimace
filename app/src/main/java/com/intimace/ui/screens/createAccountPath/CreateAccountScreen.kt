@@ -40,6 +40,7 @@ import com.intimace.ui.components.AuthTextField
 import com.intimace.ui.components.PasswordField
 import com.intimace.ui.components.PrimaryButton
 
+
 @Composable
 fun CreateAccountScreen(
     navController: NavHostController = rememberNavController(),
@@ -220,5 +221,17 @@ fun CreateAccountScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true, showSystemUi = true)
+fun CreateAccountScreenPreview() {
+    MaterialTheme {
+        CreateAccountScreen(
+            navController = rememberNavController(),
+            onCreateAccount = { _, _, _, _ -> },
+            onSignIn = {}
+        )
     }
 }

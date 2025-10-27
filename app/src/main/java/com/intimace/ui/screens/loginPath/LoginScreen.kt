@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -154,3 +155,17 @@ fun LoginScreen(
         }
     }
 }
+
+@Composable
+@Preview(showBackground = true, showSystemUi = true)
+fun LoginScreenPreview() {
+    MaterialTheme {
+        LoginScreen(
+            navController = rememberNavController(),
+            onCreateAccount = {},
+            onForgotPassword = {},
+            onSignIn = { _, _ -> }
+        )
+    }
+}
+

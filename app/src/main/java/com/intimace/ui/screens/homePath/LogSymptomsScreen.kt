@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -51,6 +52,7 @@ import androidx.navigation.compose.rememberNavController
 import com.intimace.ui.components.AppBottomNav
 import com.intimace.ui.components.DatePickerTextField
 import com.intimace.ui.components.SymptomChip
+import com.intimace.ui.theme.IntimaceTheme
 
 @Composable
 fun LogSymptomsScreen(
@@ -101,8 +103,8 @@ fun LogSymptomsScreen(
                 shape = RoundedCornerShape(12.dp),
                 elevation = CardDefaults.cardElevation(6.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             ) {
                 Column(modifier = Modifier.padding(12.dp)) {
@@ -170,7 +172,7 @@ fun LogSymptomsScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             // Symptoms chips using LazyVerticalGrid
-            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp)) {
+            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp, )) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Text("Symptoms", fontWeight = FontWeight.Medium)
                     Spacer(modifier = Modifier.height(12.dp))
@@ -252,5 +254,24 @@ fun LogSymptomsScreen(
 
             Spacer(modifier = Modifier.height(120.dp))
         }
+    }
+}
+
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun LogSymptomsScreenPreview() {
+    IntimaceTheme { // Assuming IntimaceTheme is your app's theme, as seen in previous previews
+        // Mock NavHostController
+        val navController = rememberNavController()
+
+        // Render LogSymptomsScreen with mock callbacks
+        LogSymptomsScreen(
+            navController = navController,
+            onSave = { dateMillis, mood, symptoms, temperature, notes ->
+                // No-op for preview; simulate saving data
+            },
+            onBack = { /* No-op for preview */ }
+        )
     }
 }

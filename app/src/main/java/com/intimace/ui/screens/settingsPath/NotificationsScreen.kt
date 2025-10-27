@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -167,4 +168,24 @@ fun Long.toLocalTime(): LocalTime {
     return Instant.ofEpochMilli(this)
         .atZone(ZoneId.systemDefault())
         .toLocalTime()
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NotificationsScreenPreview() {
+    val mockSettings = SettingsUiState(
+        periodReminderEnabled = true,
+        pillReminderEnabled = false,
+        ovulationAlertEnabled = true,
+        cycleSummaryEnabled = false,
+        healthTipsEnabled = true
+    )
+
+    NotificationsScreen(
+        navController = rememberNavController(),
+        settingsUiState = mockSettings,
+        onToggle = {},
+        onTimePreferenceSelected = { _, _ -> },
+        onBack = {}
+    )
 }

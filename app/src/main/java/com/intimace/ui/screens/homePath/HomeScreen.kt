@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -46,7 +47,7 @@ import com.intimace.ui.components.QuickActionItem
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-
+@Preview
 @Composable
 fun HomeScreen(
     navController: NavHostController = rememberNavController(),
@@ -125,7 +126,7 @@ fun HomeScreen(
                         }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text("Fertility today", style = MaterialTheme.typography.bodySmall, color = Color.Green)
+                    Text("Fertility today", style = MaterialTheme.typography.bodySmall, color = Color.Black)
                     Spacer(modifier = Modifier.height(6.dp))
                     // Simple progress bar showing phases (visual only)
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

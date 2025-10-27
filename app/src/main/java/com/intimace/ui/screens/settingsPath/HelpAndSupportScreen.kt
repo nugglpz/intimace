@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -182,5 +183,15 @@ fun HelpAndSupportScreen(
             Spacer(modifier = Modifier.height(120.dp))
         }
     }
+}
+
+
+@Composable
+@Preview(showBackground = true)
+fun HelpAndSupportScreenPreview() {
+    HelpAndSupportScreen(
+        navController = rememberNavController(),
+        onBack = {}
+    )
 }
 

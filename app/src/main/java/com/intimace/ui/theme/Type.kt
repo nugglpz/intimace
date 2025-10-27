@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.sp
 import com.intimace.R
 
 val bodyFontFamily = FontFamily(
-    Font(R.font.robotoflex, FontWeight.Normal),
+    Font(R.font.coolvetica_rg, FontWeight.Normal),
 )
 
 val displayFontFamily = FontFamily(
@@ -27,8 +27,8 @@ val AppTypography = Typography(
     headlineLarge = baseline.headlineLarge.copy(fontFamily = displayFontFamily),
     headlineMedium = baseline.headlineMedium.copy(fontFamily = displayFontFamily),
     headlineSmall = baseline.headlineSmall.copy(fontFamily = displayFontFamily),
-    titleLarge = baseline.titleLarge.copy(fontFamily = displayFontFamily),
-    titleMedium = baseline.titleMedium.copy(fontFamily = displayFontFamily),
+    titleLarge = baseline.titleLarge.copy(fontFamily = bodyFontFamily),
+    titleMedium = baseline.titleMedium.copy(fontFamily = bodyFontFamily),
     titleSmall = baseline.titleSmall.copy(fontFamily = displayFontFamily),
     bodyLarge = baseline.bodyLarge.copy(fontFamily = bodyFontFamily),
     bodyMedium = baseline.bodyMedium.copy(fontFamily = bodyFontFamily),

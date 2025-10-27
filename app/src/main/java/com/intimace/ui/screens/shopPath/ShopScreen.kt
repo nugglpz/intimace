@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -148,4 +149,22 @@ fun ShopScreen(
             Spacer(modifier = Modifier.height(120.dp)) // safe spacing for bottom nav
         }
     }
+}
+
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun ShopScreenPreview() {
+    val mockCartState = ShoppingCartUiState(
+        products = emptyList() // or listOf(Product(...)) if you want to show badge
+    )
+
+    ShopScreen(
+        navController = rememberNavController(),
+        shoppingCartUiState = mockCartState,
+        onOpenProduct = {},
+        onAddToCart = { _, _ -> },
+        onOpenCart = {},
+        onOpenOrders = {}
+    )
 }

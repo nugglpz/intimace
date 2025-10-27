@@ -52,6 +52,10 @@ import java.util.Calendar
 import java.util.Locale
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.navigation.compose.rememberNavController
+import com.intimace.ui.theme.IntimaceTheme
 
 @Composable
 fun CalendarScreen(
@@ -91,7 +95,7 @@ fun CalendarScreen(
                         IconButton(onClick = onPrevious) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Prev") }
                         Text(
                             text = Calendar.getInstance().apply { set(Calendar.YEAR, year); set(Calendar.MONTH, month) }.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " ${year}",
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold
                         )
                         IconButton(onClick = onNext) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next") }
                     }
@@ -138,7 +142,7 @@ fun CalendarScreen(
 
             Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             ) {
@@ -244,4 +248,27 @@ fun MonthCalendar(year: Int, monthZeroBased: Int) {
             }
         }
     )
+}
+
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun CalendarScreenPreview() {
+    IntimaceTheme { // Assuming IntimaceTheme is your app's theme, as seen in the OrderScreenPreview
+        // Mock NavHostController
+        val navController = rememberNavController()
+
+        // Mock CalendarViewModel
+        val calendarViewModel = CalendarViewModel() // Ensure CalendarViewModel has a no-arg constructor or provide mock data
+
+        // Render CalendarScreen with sample month and year
+        CalendarScreen(
+            navController = navController,
+            month = 8, // September (0-based index)
+            year = 2025,
+            onPrevious = { /* No-op for preview */ },
+            onNext = { /* No-op for preview */ },
+            calendarViewModel = calendarViewModel
+        )
+    }
 }

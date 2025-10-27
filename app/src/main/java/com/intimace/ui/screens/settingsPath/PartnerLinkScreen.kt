@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -249,4 +250,22 @@ fun PartnerLinkScreen(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PartnerLinkScreenPreview() {
+    val mockSettings = SettingsUiState(
+        cyclePredictionsSharingEnabled = true,
+        moodAndSymptomsSharingEnabled = false,
+        intimateActivitySharingEnabled = true,
+        notificationsSharingEnabled = true
+    )
+
+    PartnerLinkScreen(
+        settingsUiState = mockSettings,
+        onBack = {},
+        onToggle = {},
+        onUnlink = {}
+    )
 }

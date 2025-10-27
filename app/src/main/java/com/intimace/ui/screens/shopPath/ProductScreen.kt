@@ -38,13 +38,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.intimace.model.Product
 import com.intimace.ui.components.AppBottomNav
 import com.intimace.ui.screens.shoppingCartPath.toPeso
-
 @Composable
 fun ProductScreen(
     navController: NavHostController = rememberNavController(),
@@ -104,13 +104,13 @@ fun ProductScreen(
                 )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(currentProduct.type, color = Color.Yellow, style = MaterialTheme.typography.bodySmall)
+                    Text(currentProduct.type, color = Color.Blue, style = MaterialTheme.typography.bodySmall)
                     Spacer(modifier = Modifier.height(6.dp))
                     Text("${currentProduct.quantity} LEFT", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(currentProduct.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text("${currentProduct.birthControlHubName} | ${currentProduct.location}", style = MaterialTheme.typography.bodySmall, color = Color.Green)
+                    Text("${currentProduct.birthControlHubName} | ${currentProduct.location}", style = MaterialTheme.typography.bodySmall, color = Color.DarkGray)
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(currentProduct.price.toPeso(), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(12.dp))
@@ -138,3 +138,4 @@ fun ProductScreen(
         }
     }
 }
+

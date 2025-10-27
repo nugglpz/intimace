@@ -102,7 +102,7 @@ fun OrderScreen(
                     shape = RoundedCornerShape(12.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 ) {
@@ -121,12 +121,12 @@ fun OrderScreen(
                                 )
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Row {
-                                    Text("Placed on", style = MaterialTheme.typography.bodySmall, color = Color.White, fontWeight = FontWeight.Bold)
+                                    Text("Placed on", style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text = order.placementDate.format(dateFormatter),
                                         style = MaterialTheme.typography.bodySmall,
-                                        color = Color.Green
+                                        color = Color.DarkGray
                                     )
                                 }
                             }
@@ -160,13 +160,13 @@ fun OrderScreen(
                                             modifier = Modifier
                                                 .size(36.dp)
                                                 .clip(CircleShape)
-                                                .background(Color(0xFFDFF6E9)),
+                                                .background(Color(0xFFD470A2)),
                                             contentAlignment = Alignment.Center
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Default.LocalShipping,
                                                 contentDescription = null,
-                                                tint = Color(0xFF2E7D32)
+                                                tint = Color(0xFFFFF7F9)
                                             )
                                         }
                                         if (idx != order.timeline.timelineSteps.size - 1) {
@@ -174,7 +174,7 @@ fun OrderScreen(
                                                 modifier = Modifier
                                                     .width(2.dp)
                                                     .height(40.dp)
-                                                    .background(Color(0xFFDFF6E9))
+                                                    .background(Color(0xFFFFF7F9))
                                             )
                                         }
                                     }
@@ -189,9 +189,9 @@ fun OrderScreen(
                                         )
                                         Spacer(modifier = Modifier.height(6.dp))
                                         Row {
-                                            Text(step.date.format(dateFormatter), style = MaterialTheme.typography.bodySmall, color = Color.Green)
+                                            Text(step.date.format(dateFormatter), style = MaterialTheme.typography.bodySmall, color = Color.DarkGray)
                                             Spacer(modifier = Modifier.width(12.dp))
-                                            Text(text = step.time.format(timeFormatter), style = MaterialTheme.typography.bodySmall, color = Color.Green)
+                                            Text(text = step.time.format(timeFormatter), style = MaterialTheme.typography.bodySmall, color = Color.DarkGray)
                                         }
                                     }
                                 }
@@ -217,7 +217,7 @@ fun OrderScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(imageVector = Icons.Default.LocalShipping, contentDescription = "Tracking")
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("Tracking Number: ", style = MaterialTheme.typography.bodySmall, color = Color.White)
+                            Text("Tracking Number: ", style = MaterialTheme.typography.bodySmall, color = Color.DarkGray)
                             Text(text = order.trackingNumber, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold)
                         }
                     }
@@ -231,12 +231,12 @@ fun OrderScreen(
                     shape = RoundedCornerShape(12.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        containerColor = MaterialTheme.colorScheme.onTertiaryContainer,
                         contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 ) {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text("Order Items", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+                        Text("Order Items", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, color = Color.White)
 
                         // Items list: use Column + forEach (safe for small order lists)
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -263,11 +263,11 @@ fun OrderScreen(
                                         }
                                         Spacer(modifier = Modifier.width(12.dp))
                                         Column(modifier = Modifier.weight(1f)) {
-                                            Text(text = product.name, style = MaterialTheme.typography.bodyMedium)
+                                            Text(text = product.name, style = MaterialTheme.typography.bodyMedium, color = Color.White)
                                             Spacer(modifier = Modifier.height(4.dp))
                                             Text("Qty: $quantity", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                                         }
-                                        Text(product.price.toPeso(), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                                        Text(product.price.toPeso(), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold, color = Color.White)
                                     }
 
                                     Divider()
@@ -310,8 +310,8 @@ fun OrderScreen(
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text("Total", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Text(order.total.toPeso(), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                            Text("Total", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.White)
+                            Text(order.total.toPeso(), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.White)
                         }
                     }
                 }
