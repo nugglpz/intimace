@@ -55,6 +55,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.intimace.ui.screens.shoppingCartPath.toPeso
+import com.intimace.ui.theme.IntimacePurple
 import java.time.LocalTime
 
 
@@ -126,20 +127,28 @@ fun PasswordField(
 @Composable
 fun PrimaryButton(
     text: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    onClick: () -> Unit
+    containerColor: Color = IntimacePurple,   // ← Default is now YOUR purple
+    contentColor: Color = Color.White
 ) {
     Button(
         onClick = onClick,
         enabled = enabled,
-        shape = RoundedCornerShape(50),
         modifier = modifier
             .fillMaxWidth()
-            .height(52.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            .height(56.dp),
+        shape = RoundedCornerShape(30.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = containerColor,
+            contentColor = contentColor,
+            disabledContainerColor = Color(0xFFB0B0B0),
+            disabledContentColor = Color.White
+        ),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 12.dp)
     ) {
-        Text(text = text, color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Medium)
+        Text(text, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
     }
 }
 
@@ -333,22 +342,44 @@ fun TimePickerTextField(
 
 
 @Composable
-fun QuickActionItem(label: String, icon: ImageVector, modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun QuickActionItem(
+    label: String,
+    icon: ImageVector,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    containerColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
+    contentColor: Color = Color.Black,
+    iconTint: Color? = null,                 // ← NEW parameter
+) {
     Card(
         modifier = modifier
             .height(96.dp)
             .clickable { onClick() },
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            containerColor = containerColor,
+            contentColor = contentColor
         )
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()) {
-            Icon(imageVector = icon, contentDescription = label, tint = MaterialTheme.colorScheme.primary)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(label, style = MaterialTheme.typography.bodySmall)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = label,
+                tint = iconTint ?: contentColor,   // uses your custom color if provided
+                modifier = Modifier.size(28.dp)
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodySmall,
+                color = contentColor,
+                fontWeight = FontWeight.Medium
+            )
         }
     }
 }

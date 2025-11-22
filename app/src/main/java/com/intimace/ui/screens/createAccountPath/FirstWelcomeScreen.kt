@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.intimace.ui.components.BottomNavigationControls
 
+
 @Composable
 fun FirstWelcomeScreen(
     onContinue: () -> Unit,

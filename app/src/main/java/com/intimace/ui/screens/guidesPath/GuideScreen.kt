@@ -3,17 +3,7 @@ package com.intimace.ui.screens.guidesPath
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,19 +11,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,93 +21,151 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.compose.ui.unit.sp
 import com.intimace.data.guides
-import com.intimace.ui.components.AppBottomNav
+import com.intimace.ui.theme.IntimacePurple
+import com.intimace.ui.theme.IntimaceTheme
 
 @Composable
 fun GuideScreen(
-    navController: NavHostController,
     guideIndex: Int = 0,
     onBack: () -> Unit = {},
     onToggleBookmark: (Boolean) -> Unit = {}
 ) {
-    val scrollState = rememberScrollState()
     var bookmarked by remember { mutableStateOf(false) }
 
-    Scaffold { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(scrollState)
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-        ) {
-            // header row with back + title + bookmark
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { onBack() }) {
-                    IconButton(onClick = { onBack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Guide Detail", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.SemiBold)
-                }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .verticalScroll(rememberScrollState())
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(horizontal = 20.dp)
+    ) {
+        Spacer(Modifier.height(16.dp))
 
-                IconButton(onClick = {
-                    bookmarked = !bookmarked
-                    onToggleBookmark(bookmarked)
-                }) {
-                    Icon(imageVector = if (bookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder, contentDescription = "Bookmark")
+        // Header: Back + Title + Bookmark
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable { onBack() }
+            ) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = IntimacePurple
+                    )
                 }
+                Text(
+                    text = "Guide",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = IntimacePurple
+                )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            IconButton(onClick = {
+                bookmarked = !bookmarked
+                onToggleBookmark(bookmarked)
+            }) {
+                Icon(
+                    imageVector = if (bookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                    contentDescription = "Bookmark",
+                    tint = IntimacePurple
+                )
+            }
+        }
 
-            // large image placeholder
-            Box(
+        Spacer(Modifier.height(24.dp))
+
+        // Guide Image
+        Card(
+            shape = RoundedCornerShape(20.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Image(
+                painter = painterResource(id = guides[guideIndex].img),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xFFEEEEEE))
-            ) {
-                Image(
-                    painter = painterResource(guides[guideIndex].img),
-                    modifier = Modifier.fillMaxSize(),
-                    contentDescription = "Product image",
-                    contentScale = ContentScale.Crop
-                )
-            }
+                    .height(220.dp)
+            )
+        }
 
-            Spacer(modifier = Modifier.height(12.dp))
+        Spacer(Modifier.height(24.dp))
 
-            // content card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    // small category pill
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(stringResource(guides[guideIndex].title), style = MaterialTheme.typography.titleLarge, color = Color.Green, fontWeight = FontWeight.SemiBold)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    // multi-paragraph body (sample copy)
-                    val body = stringResource(guides[guideIndex].description).trimIndent()
+        // Title
+        Text(
+            text = stringResource(guides[guideIndex].title),
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = IntimacePurple
+        )
 
-                    body.split("\n").forEach { para ->
-                        Text(para, style = MaterialTheme.typography.bodyMedium, color = Color.White)
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
+        Spacer(Modifier.height(12.dp))
+
+        // Category Pill
+        Card(
+            colors = CardDefaults.cardColors(containerColor = IntimacePurple.copy(alpha = 0.15f)),
+            shape = RoundedCornerShape(20.dp)
+        ) {
+
+            Text(
+                text = stringResource(guides[guideIndex].title).uppercase(),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                color = IntimacePurple,
+                fontWeight = FontWeight.Medium,
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
+
+        Spacer(Modifier.height(20.dp))
+
+        // Body Text in White Card
+        Card(
+            shape = RoundedCornerShape(20.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(modifier = Modifier.padding(24.dp)) {
+                val body = stringResource(guides[guideIndex].description).split("\n").filter { it.isNotBlank() }
+
+                body.forEach { paragraph ->
+                    Text(
+                        text = paragraph.trim(),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color(0xFF333333),
+                        lineHeight = 28.sp
+                    )
+                    Spacer(Modifier.height(16.dp))
                 }
             }
-
-            Spacer(modifier = Modifier.height(120.dp))
         }
+
+        Spacer(Modifier.height(140.dp)) // Safe space for bottom nav
+    }
+}
+
+// PREVIEW — LOOKS STUNNING
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun GuideScreenPreview() {
+    IntimaceTheme {
+        GuideScreen(
+            guideIndex = 0,
+            onBack = {},
+            onToggleBookmark = {}
+        )
     }
 }

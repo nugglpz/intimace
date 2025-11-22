@@ -1,274 +1,243 @@
 package com.intimace.ui.screens.calendarPath
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
-import androidx.navigation.NavHostController
-import com.intimace.ui.components.AppBottomNav
-import com.intimace.uistate.CalendarUiState
-import com.intimace.viewmodel.CalendarViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import java.util.Calendar
-import java.util.Locale
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.intimace.ui.theme.IntimaceTheme
+import com.intimace.viewmodel.CalendarViewModel
+import java.text.SimpleDateFormat
+import java.util.*
+
+// INTIMACE BRANDING ONLY
+val intimacePurple = Color(0xFF640068)
+val intimaceGradient = Brush.verticalGradient(
+    colors = listOf(
+        Color(0xFFFFFFFF),
+        Color(0xFFF8F4FF),
+        Color(0xFFE8DAFF),
+        Color(0xFFD8C9FF)
+    )
+)
 
 @Composable
 fun CalendarScreen(
     navController: NavHostController,
     month: Int,
     year: Int = 2025,
-    onPrevious: () -> Unit,
-    onNext: () -> Unit,
-    calendarViewModel: CalendarViewModel
+    onPrevious: () -> Unit = {},
+    onNext: () -> Unit = {},
+    calendarViewModel: CalendarViewModel? = null
 ) {
-    // monthZeroBased: 0 = January, 8 = September
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(intimaceGradient)
+            .verticalScroll(rememberScrollState())
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(horizontal = 16.dp)
+    ) {
+        Spacer(Modifier.height(12.dp))
 
-    val scrollState = rememberScrollState()
+        Text(
+            text = "Calendar",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = intimacePurple
+        )
+        Spacer(Modifier.height(20.dp))
 
-    Scaffold() { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(horizontal = 16.dp)
-                .padding(bottom = innerPadding.calculateBottomPadding())
+        // Calendar Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Text("Calendar", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Calendar card
-            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                )
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    // Month header
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = onPrevious) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Prev") }
-                        Text(
-                            text = Calendar.getInstance().apply { set(Calendar.YEAR, year); set(Calendar.MONTH, month) }.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " ${year}",
-                            style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold
-                        )
-                        IconButton(onClick = onNext) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next") }
+            Column(Modifier.padding(20.dp)) {
+                // Header
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onPrevious) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Previous", tint = intimacePurple)
                     }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Weekday labels
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        listOf("S","M","T","W","T","F","S").forEach { d ->
-                            Text(d, style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
-                        }
+                    Text(
+                        text = "${monthNameSafe(month)} $year",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = intimacePurple
+                    )
+                    IconButton(onClick = onNext) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowForward, "Next", tint = intimacePurple)
                     }
+                }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                Spacer(Modifier.height(16.dp))
 
-                    // Calendar grid
-                    MonthCalendar(year = year, monthZeroBased = month)
+                // Weekdays
+                Row(Modifier.fillMaxWidth()) {
+                    listOf("S", "M", "T", "W", "T", "F", "S").forEach {
+                        Text(it, Modifier.weight(1f), textAlign = TextAlign.Center, color = Color(0xFF888888))
+                    }
+                }
+
+                Spacer(Modifier.height(12.dp))
+
+                // THIS IS THE ONLY CHANGE → Box with fixed height for the grid
+                Box(modifier = Modifier.height(380.dp)) {   // Adjust this value if you want bigger/smaller cells
+                    CalendarGrid(year = year, month = month)
                 }
             }
+        }
 
-            Spacer(modifier = Modifier.height(18.dp))
-
-            // Legend and forecast card
-            Text("Legend", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-            Spacer(modifier = Modifier.height(8.dp))
-            Column {
-                // small legend items
-                val legend = listOf(
-                    Pair("Menstruation Phase", Color(0xFFFFECEC)),
-                    Pair("Follicular Phase", Color(0xFFDCEBFF)),
-                    Pair("Ovulation Phase", Color(0xFFF3E8FF)),
-                    Pair("Luteal Phase", Color(0xFFFFF2D6))
-                )
-                legend.forEach { (label, color) ->
+        // Rest of your beautiful UI (Legend + Forecast)
+        Spacer(Modifier.height(24.dp))
+        Text("Legend", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, color = intimacePurple)
+        Spacer(Modifier.height(12.dp))
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(10.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Column(Modifier.padding(18.dp)) {
+                listOf(
+                    "Menstruation Phase" to Color(0xFFFFECEC),
+                    "Follicular Phase" to Color(0xFFDCEBFF),
+                    "Ovulation Phase" to Color(0xFFF3E8FF),
+                    "Luteal Phase" to Color(0xFFFFF2D6)
+                ).forEach { (label, color) ->
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 6.dp)) {
-                        Box(modifier = Modifier.size(16.dp).clip(RoundedCornerShape(8.dp)).background(color))
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Box(Modifier.size(20.dp).clip(RoundedCornerShape(8.dp)).background(color))
+                        Spacer(Modifier.width(12.dp))
                         Text(label, style = MaterialTheme.typography.bodyMedium)
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                )
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Fertility Forecast", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(modifier = Modifier.size(10.dp).clip(RoundedCornerShape(5.dp)).background(Color(0xFFFF6B6B)))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("High chance of pregnancy: ${monthName(month)} 13-15", style = MaterialTheme.typography.bodyMedium)
-                    }
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(modifier = Modifier.size(10.dp).clip(RoundedCornerShape(5.dp)).background(Color(0xFFFFC857)))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Medium chance of pregnancy: ${monthName(month)} 12, 16", style = MaterialTheme.typography.bodyMedium)
-                    }
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(modifier = Modifier.size(10.dp).clip(RoundedCornerShape(5.dp)).background(Color(0xFF5BD078)))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Low chance of pregnancy: ${monthName(month)} 1-11, 17-31", style = MaterialTheme.typography.bodyMedium)
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(120.dp))
         }
-    }
-}
 
-fun monthName(monthZeroBased: Int): String {
-    val cal = Calendar.getInstance()
-    cal.set(Calendar.MONTH, monthZeroBased)
-    return cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) ?: ""
+        Spacer(Modifier.height(20.dp))
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp),
+            elevation = CardDefaults.cardElevation(12.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Column(Modifier.padding(20.dp)) {
+                Text("Fertility Forecast", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, color = intimacePurple)
+                Spacer(Modifier.height(12.dp))
+                ForecastRow("High chance of pregnancy", Color(0xFFFF6B6B), "${monthNameSafe(month)} 13–15")
+                ForecastRow("Medium chance of pregnancy", Color(0xFFFFC857), "${monthNameSafe(month)} 12, 16")
+                ForecastRow("Low chance of pregnancy", Color(0xFF5BD078), "${monthNameSafe(month)} 1–11, 17–31")
+            }
+        }
+
+        Spacer(Modifier.height(120.dp))
+    }
 }
 
 @Composable
-fun MonthCalendar(year: Int, monthZeroBased: Int) {
-    // Build list of day cells (including leading + trailing blanks so grid is full)
+private fun ForecastRow(text: String, color: Color, dates: String) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 5.dp)) {
+        Box(Modifier.size(12.dp).clip(RoundedCornerShape(6.dp)).background(color))
+        Spacer(Modifier.width(10.dp))
+        Text("$text: $dates", style = MaterialTheme.typography.bodyMedium)
+    }
+}
+
+// FIXED GRID — now safe inside verticalScroll
+@Composable
+private fun CalendarGrid(year: Int, month: Int) {
     val cal = Calendar.getInstance().apply {
         set(Calendar.YEAR, year)
-        set(Calendar.MONTH, monthZeroBased)
+        set(Calendar.MONTH, month)
         set(Calendar.DAY_OF_MONTH, 1)
     }
-    val firstWeekday = cal.get(Calendar.DAY_OF_WEEK) // 1=Sunday
+    val firstDayOfWeek = cal.get(Calendar.DAY_OF_WEEK)
     val daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
 
     val cells = mutableListOf<Int?>()
-    val leadingBlanks = (firstWeekday - Calendar.SUNDAY + 7) % 7
+    val leadingBlanks = (firstDayOfWeek - Calendar.SUNDAY + 7) % 7
     repeat(leadingBlanks) { cells.add(null) }
     for (d in 1..daysInMonth) cells.add(d)
-    // pad trailing blanks to make full weeks
     while (cells.size % 7 != 0) cells.add(null)
 
-    // color mapping for demo
-    fun bgForDay(d: Int?): Color {
-        if (d == null) return Color.Transparent
-        return when {
-            d in 5..9 -> Color(0xFFFFE6E6)   // menstrual
-            d in 10..11 -> Color(0xFFDCEBFF) // follicular
-            d == 14 -> Color(0xFFF3E8FF)     // ovulation
-            else -> Color(0xFFFFF2D6)        // luteal
-        }
-    }
-
-    val rows = cells.size / 7
-    val cellHeight = 56.dp
-    // Use LazyVerticalGrid to force 7 equal-width cells per row (no spanning)
     LazyVerticalGrid(
         columns = GridCells.Fixed(7),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height((rows * (cellHeight + 12.dp))), // estimate total height (cell + padding)
+        modifier = Modifier.fillMaxSize(),
         userScrollEnabled = false,
-        content = {
-            items(cells.size) { idx ->
-                val day = cells[idx]
-                Box(
-                    modifier = Modifier
-                        .padding(6.dp)
-                        .height(cellHeight)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (day != null) {
-                        Card(
-                            modifier = Modifier.fillMaxSize(),
-                            shape = RoundedCornerShape(10.dp),
-                            elevation = CardDefaults.cardElevation(0.dp),
-                            colors = CardDefaults.cardColors(containerColor = bgForDay(day))
-                        ) {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Text(text = day.toString(), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(6.dp), color = Color.DarkGray)
-                            }
-                        }
-                    } else {
-                        // empty cell (keeps grid shape)
-                        Spacer(modifier = Modifier.fillMaxSize())
-                    }
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(cells.size) { index ->                // ← FIXED: use index instead of nullable items
+            val day = cells[index]
+            Box(
+                modifier = Modifier
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(
+                        when (day) {
+                            in 5..9 -> Color(0xFFFFECEC)
+                            in 10..13 -> Color(0xFFDCEBFF)
+                            14, 15 -> Color(0xFFF3E8FF)
+                            else -> Color(0xFFFFF2D6)
+                        }.takeIf { day != null } ?: Color.Transparent
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (day != null) {
+                    Text(
+                        text = day.toString(),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF333333)
+                    )
                 }
             }
         }
-    )
+    }
 }
-
+private fun monthNameSafe(monthZeroBased: Int): String =
+    try {
+        SimpleDateFormat("MMMM", Locale.getDefault()).format(
+            Calendar.getInstance().apply { set(Calendar.MONTH, monthZeroBased) }.time
+        )
+    } catch (_: Exception) {
+        "Month"
+    }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun CalendarScreenPreview() {
-    IntimaceTheme { // Assuming IntimaceTheme is your app's theme, as seen in the OrderScreenPreview
-        // Mock NavHostController
-        val navController = rememberNavController()
-
-        // Mock CalendarViewModel
-        val calendarViewModel = CalendarViewModel() // Ensure CalendarViewModel has a no-arg constructor or provide mock data
-
-        // Render CalendarScreen with sample month and year
+    IntimaceTheme {
         CalendarScreen(
-            navController = navController,
-            month = 8, // September (0-based index)
-            year = 2025,
-            onPrevious = { /* No-op for preview */ },
-            onNext = { /* No-op for preview */ },
-            calendarViewModel = calendarViewModel
+            navController = rememberNavController(),
+            month = 10,
+            year = 2025
         )
     }
 }

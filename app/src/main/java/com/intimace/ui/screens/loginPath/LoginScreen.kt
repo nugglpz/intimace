@@ -1,171 +1,162 @@
 package com.intimace.ui.screens.loginPath
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.intimace.ui.components.AuthHeader
-import com.intimace.ui.components.AuthTextField
 import com.intimace.ui.components.PasswordField
 import com.intimace.ui.components.PrimaryButton
+import com.intimace.ui.theme.IntimacePurple
+import com.intimace.ui.theme.IntimaceTheme
 
 @Composable
 fun LoginScreen(
-    navController: NavHostController = rememberNavController(),
     onCreateAccount: () -> Unit,
     onForgotPassword: () -> Unit,
     onSignIn: (String, String) -> Unit
 ) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
+    IntimaceTheme {
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 20.dp, vertical = 18.dp)
+                .background(Color.White)
+                .statusBarsPadding()
+                .navigationBarsPadding()
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Card(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .shadow(2.dp, RoundedCornerShape(12.dp)),
-                shape = RoundedCornerShape(12.dp),
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp)
             ) {
-                Column(
+                Spacer(Modifier.height(40.dp))
+
+                Card(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 20.dp, vertical = 18.dp)
+                        .fillMaxWidth()
+                        .weight(1f),
+                    shape = RoundedCornerShape(28.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
-                    AuthHeader(title = "Welcome back", subtitle = "Sign in to continue")
-
-                    Spacer(modifier = Modifier.height(18.dp))
-
-                    var email by remember { mutableStateOf("") }
-                    var password by remember { mutableStateOf("") }
-                    var emailError by remember { mutableStateOf<String?>(null) }
-
-                    // Real-time email validation
-                    fun validateEmail(input: String): Boolean {
-                        return android.util.Patterns.EMAIL_ADDRESS.matcher(input).matches()
-                    }
-
-                    // Email field with validation
-                    OutlinedTextField(
-                        value = email,
-                        onValueChange = {
-                            email = it
-                            emailError = if (it.isNotEmpty() && !validateEmail(it)) {
-                                "Please enter a valid email address"
-                            } else null
-                        },
-                        label = { Text("Email") },
-                        isError = emailError != null,
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    if (emailError != null) {
-                        Text(
-                            text = emailError!!,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(start = 16.dp, top = 2.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    PasswordField(
-                        password = password,
-                        onPasswordChange = { password = it },
-                        label = "Password"
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 28.dp, vertical = 32.dp)
                     ) {
-                        TextButton(onClick = onForgotPassword) {
-                            Text("Forgot password?", color = MaterialTheme.colorScheme.primary)
+                        // Fixed: Removed titleColor & borderColor (they don't exist in your components)
+                        AuthHeader(
+                            title = "Welcome back",
+                            subtitle = "Sign in to continue"
+                        )
+
+                        Spacer(Modifier.height(32.dp))
+
+                        var email by remember { mutableStateOf("") }
+                        var password by remember { mutableStateOf("") }
+                        var emailError by remember { mutableStateOf<String?>(null) }
+
+                        fun validateEmail(input: String): Boolean =
+                            android.util.Patterns.EMAIL_ADDRESS.matcher(input).matches()
+
+                        OutlinedTextField(
+                            value = email,
+                            onValueChange = {
+                                email = it
+                                emailError = if (it.isNotEmpty() && !validateEmail(it)) {
+                                    "Please enter a valid email address"
+                                } else null
+                            },
+                            label = { Text("Email") },
+                            isError = emailError != null,
+                            singleLine = true,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = IntimacePurple,
+                                unfocusedBorderColor = Color(0xFFE0E0E0),
+                                errorBorderColor = Color.Red
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        emailError?.let {
+                            Text(
+                                text = it,
+                                color = Color.Red,
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                            )
                         }
-                    }
 
-                    Spacer(modifier = Modifier.weight(1f))
+                        Spacer(Modifier.height(16.dp))
 
-                    // Disable Sign In button if invalid
-                    PrimaryButton(
-                        text = "Sign In",
-                        onClick = {
-                            if (validateEmail(email)) {
-                                onSignIn(email, password)
-                            } else {
-                                emailError = "Please enter a valid email address"
-                            }
-                        },
-                        enabled = emailError == null && email.isNotEmpty() && password.isNotEmpty()
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            "Don't have an account?",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.Gray
+                        PasswordField(
+                            password = password,
+                            onPasswordChange = { password = it },
+                            label = "Password"
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        TextButton(onClick = onCreateAccount) {
-                            Text("Sign up", color = MaterialTheme.colorScheme.primary)
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            TextButton(onClick = onForgotPassword) {
+                                Text("Forgot password?", color = IntimacePurple, fontWeight = FontWeight.Medium)
+                            }
+                        }
+
+                        Spacer(Modifier.weight(1f))
+
+                        // Fixed: Removed containerColor (doesn't exist in your PrimaryButton)
+                        PrimaryButton(
+                            text = "Sign In",
+                            onClick = {
+                                if (validateEmail(email)) {
+                                    onSignIn(email, password)
+                                } else {
+                                    emailError = "Please enter a valid email address"
+                                }
+                            },
+                            enabled = email.isNotEmpty() && password.isNotEmpty() && emailError == null,
+                            containerColor = IntimacePurple,        // ← THIS LINE MAKES IT PURPLE
+                            contentColor = Color.White              // ← White text on purple
+                        )
+
+                        Spacer(Modifier.height(20.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Don't have an account? ", color = Color(0xFF666666))
+                            TextButton(onClick = onCreateAccount) {
+                                Text("Sign up", color = IntimacePurple, fontWeight = FontWeight.SemiBold)
+                            }
                         }
                     }
                 }
+
+                Spacer(Modifier.height(40.dp))
             }
         }
     }
 }
 
-@Composable
 @Preview(showBackground = true, showSystemUi = true)
+@Composable
 fun LoginScreenPreview() {
-    MaterialTheme {
+    IntimaceTheme {
         LoginScreen(
-            navController = rememberNavController(),
             onCreateAccount = {},
             onForgotPassword = {},
             onSignIn = { _, _ -> }
         )
     }
 }
-

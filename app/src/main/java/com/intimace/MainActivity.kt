@@ -147,16 +147,14 @@ fun IntimaceApp(
                 // Splash / Auth
                 composable("splash") {
                     SplashScreen(
-                        navController = navController,
-                        onGetStarted = { navController.navigate("createAccount") },          // taps Let's Get Started -> login (or onboarding)
-                        onLogin = { navController.navigate("login") },               // explicit Login button -> login screen
+                        onGetStarted = { navController.navigate("createAccount") },
+                        onLogin = { navController.navigate("login") }
                     )
                 }
 
                 composable("login") {
                     val context = LocalContext.current
                     LoginScreen(
-                        navController = navController,
                         onSignIn = { email, password ->
                             loginViewModel.logUserIn(email, password)
                             navController.navigate("home")
@@ -164,16 +162,13 @@ fun IntimaceApp(
                         },
                         onCreateAccount = { navController.navigate("createAccount") },
                         onForgotPassword = {
-                            loginUiState.copy(
-                                resetPasswordTriggered = true
-                            )
+                            loginUiState.copy(resetPasswordTriggered = true)
                             navController.navigate("resetPassword")
                         }
                     )
                 }
                 composable("createAccount") {
                     CreateAccountScreen(
-                        navController = navController,
                         onCreateAccount = { email, username, password, pin ->
                             createAccountViewModel.initializeEmailUsernamePasswordPin(email, username, password, pin)
                             navController.navigate("welcome1")
@@ -207,7 +202,7 @@ fun IntimaceApp(
                         onContinue = { name, age, sex ->
                             createAccountViewModel.initializeNameAgeSex(name, age, sex)
                             navController.navigate("welcome3")
-                                     },
+                        },
                         onBack = { navController.popBackStack() },
                         onSkip = { navController.navigate("home") }
                     )
@@ -219,7 +214,7 @@ fun IntimaceApp(
                         onContinue = { isRegular, averageCycleDays, firstDayOfLastPeriod ->
                             createAccountViewModel.initializeIsRegularAverageCycleDaysFirstDayOfLastPeriod(isRegular, averageCycleDays, firstDayOfLastPeriod)
                             navController.navigate("welcome4")
-                                     },
+                        },
                         onBack = { navController.popBackStack() },
                         onSkip = { navController.navigate("home") }
                     )
@@ -253,7 +248,6 @@ fun IntimaceApp(
                 composable("logSymptoms") {
                     val context = LocalContext.current
                     LogSymptomsScreen(
-                        navController = navController,
                         onSave = { entryDateMillis, mood, symptoms, bodyTemperature, notes ->
                             logSymptomsViewModel.initializeAll(entryDateMillis, mood, symptoms, bodyTemperature, notes)
                             Toast.makeText(context, "Symptoms saved.", Toast.LENGTH_SHORT).show()
@@ -266,12 +260,12 @@ fun IntimaceApp(
 
                 composable("calendar") {
                     CalendarScreen(
-                        navController = navController,
+                        navController = navController,                    // ← Real navController
+                        month = calendarUiState.monthIndex,               // 0-based (January = 0)
                         year = calendarUiState.year,
-                        month = calendarUiState.monthIndex,
                         onPrevious = { calendarViewModel.decrementMonthIndex() },
                         onNext = { calendarViewModel.incrementMonthIndex() },
-                        calendarViewModel = calendarViewModel
+                        calendarViewModel = calendarViewModel             // ← Real ViewModel
                     )
                 }
 
@@ -282,14 +276,13 @@ fun IntimaceApp(
                         onOpenGuide = { index ->
                             guideViewModel.setGuideIndex(index)
                             navController.navigate("guide")
-                                      },
+                        },
                         onBack = { navController.popBackStack() }
                     )
                 }
 
                 composable("guide") {
                     GuideScreen(
-                        navController = navController,
                         guideIndex = guideUiState.guideIndex,
                         onBack = { navController.popBackStack() }
                     )
@@ -304,7 +297,7 @@ fun IntimaceApp(
                         onOpenProduct = { product ->
                             shopViewModel.setCurrentProduct(product)
                             navController.navigate("product")
-                                        },
+                        },
                         onOpenCart = { navController.navigate("cart") },
                         onOpenOrders = { navController.navigate("orders") },
                         onAddToCart = { product, price ->
@@ -325,7 +318,7 @@ fun IntimaceApp(
                             shoppingCartViewModel.addToCart(product, price)
                             Toast.makeText(context, "Added to cart!", Toast.LENGTH_SHORT).show()
                             navController.navigate("cart")
-                                      },
+                        },
                         onOpenCart = { navController.navigate("cart") },
                         onBack = { navController.popBackStack() })
                 }
@@ -372,7 +365,7 @@ fun IntimaceApp(
                         onOpenOrder = { order ->
                             orderHistoryViewModel.setCurrentOrder(order)
                             navController.navigate("order")
-                                      },
+                        },
                         onBack = { navController.popBackStack() }
                     )
                 }
