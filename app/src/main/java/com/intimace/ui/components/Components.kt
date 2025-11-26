@@ -577,7 +577,7 @@ fun ProductCard(
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            containerColor = Color.White,
             contentColor = MaterialTheme.colorScheme.onTertiaryContainer
         )
     ) {
@@ -600,11 +600,16 @@ fun ProductCard(
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(2f)) {
-                Text(type, color = Color.Yellow, style = MaterialTheme.typography.bodySmall)
+                Text(type, color = IntimacePurple, style = MaterialTheme.typography.bodySmall)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(location, style = MaterialTheme.typography.bodySmall, color = Color.Green)
+                Text(
+                    text = location,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = IntimacePurple,  // YOUR OFFICIAL INTIMACE SECONDARY TEXT COLOR
+                    fontWeight = FontWeight.Medium
+                )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(price.toPeso(), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
             }
@@ -613,8 +618,11 @@ fun ProductCard(
 
             Button(
                 onClick = onAddToCart,
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.width(80.dp).height(45.dp)
+                colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = IntimacePurple),
+                shape = RoundedCornerShape(30.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
+                border = BorderStroke(1.5.dp, IntimacePurple.copy(alpha = 0.3f)),
+                modifier = Modifier.height(52.dp)
             ) {
                 Text(text = "Add to Cart", textAlign = TextAlign.Center, fontSize = 10.sp, lineHeight=12.sp)
             }
@@ -707,14 +715,10 @@ fun SettingsRow(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        )
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
             modifier = Modifier

@@ -1,39 +1,15 @@
 package com.intimace.ui.screens.settingsPath
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Help
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,18 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.intimace.data.currentAccount
-import com.intimace.ui.components.AppBottomNav
 import com.intimace.ui.components.SettingsRow
 import com.intimace.uistate.CreateAccountUiState
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.intimace.ui.theme.*
 
 @Composable
 fun SettingsScreen(
-    navController: NavHostController = rememberNavController(),
     createAccountUiState: CreateAccountUiState,
     onEditProfile: () -> Unit = {},
     onNotifications: () -> Unit = {},
@@ -61,82 +32,167 @@ fun SettingsScreen(
     onHelp: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
-    var selectedNav by remember { mutableIntStateOf(4) }
-    val scroll = rememberScrollState()
-
-    Scaffold() { innerPadding ->
-        Column(modifier = Modifier
+    Column(
+        modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scroll)
-            .padding(innerPadding)
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-        ) {
-            Text("Settings", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.SemiBold)
-            Spacer(modifier = Modifier.height(12.dp))
+            .background(IntimaceGradient)           // YOUR ROYAL GRADIENT
+            .verticalScroll(rememberScrollState())
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(horizontal = 20.dp)
+    ) {
+        Spacer(Modifier.height(20.dp))
 
-            // profile card
-            Card(shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp), modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                )
+        // Header
+        Text(
+            text = "Settings",
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold,
+            color = IntimacePurple
+        )
+
+        Spacer(Modifier.height(32.dp))
+
+        // Profile Card — Premium White
+        Card(
+            shape = RoundedCornerShape(28.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier.padding(24.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(modifier = Modifier.size(64.dp).clip(CircleShape).background(Color(0xFFF3E9FF)), contentAlignment = Alignment.Center) {
-                        Icon(imageVector = Icons.Default.Person, contentDescription = "avatar", tint = Color(0xFF7C3AED))
-                    }
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column {
-                        Text(currentAccount.name.ifEmpty { "Lovely Human" }, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = Color.White)
-                        Text(currentAccount.name.ifEmpty { "No email added" }, style = MaterialTheme.typography.bodySmall, color = Color.LightGray)
-                    }
+                // Avatar Circle
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .background(IntimacePurple.copy(alpha = 0.15f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Default.Person,
+                        contentDescription = "Profile",
+                        tint = IntimacePurple,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
+
+                Spacer(Modifier.width(20.dp))
+
+                Column {
+                    Text(
+                        text = currentAccount.name.ifEmpty { "Lovely Human" },
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = IntimacePurple
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = currentAccount.email.ifEmpty { "No email added" },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color(0xFF666666)
+                    )
                 }
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            SettingsRow(icon = { Icon(imageVector = Icons.Default.Person, contentDescription = null, tint = Color(0xFF7C3AED)) }, title = "Edit Profile", subtitle = "Personal information & preferences", onClick = onEditProfile)
-            Spacer(modifier = Modifier.height(8.dp))
-            SettingsRow(icon = { Icon(imageVector = Icons.Default.Notifications, contentDescription = null, tint = Color(0xFF7C3AED)) }, title = "Notifications", subtitle = "Manage alerts & reminders", onClick = onNotifications)
-            Spacer(modifier = Modifier.height(8.dp))
-            SettingsRow(icon = { Icon(imageVector = Icons.Default.Lock, contentDescription = null, tint = Color(0xFF7C3AED)) }, title = "Privacy & Security", subtitle = "Control data sharing & access", onClick = onPrivacy)
-            Spacer(modifier = Modifier.height(8.dp))
-            SettingsRow(icon = { Icon(imageVector = Icons.Default.Link, contentDescription = null, tint = Color(0xFF7C3AED)) }, title = "Partner Link Settings", subtitle = "Manage what information is shared", onClick = onPartnerLink)
-            Spacer(modifier = Modifier.height(8.dp))
-            SettingsRow(icon = { Icon(imageVector = Icons.Default.Help, contentDescription = null, tint = Color(0xFF7C3AED)) }, title = "Help & Support", subtitle = "FAQs, contact us, feedback", onClick = onHelp)
-            Spacer(modifier = Modifier.height(8.dp))
-            SettingsRow(icon = { Icon(imageVector = Icons.Default.ExitToApp, contentDescription = null, tint = Color(0xFFEF6C6C)) }, title = "Log Out", subtitle = "Sign out of your account", onClick = onLogout, trailingContent = {
-                Icon(imageVector = Icons.Default.ChevronRight, contentDescription = null, tint = Color(0xFFEF6C6C))
-            })
-
-            Spacer(modifier = Modifier.height(32.dp))
-            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Intimace v1.0.0", color = Color.Gray, style = MaterialTheme.typography.bodySmall)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text("© 2023 Intimace. All rights reserved.", color = Color.Gray, style = MaterialTheme.typography.bodySmall)
-            }
-
-            Spacer(modifier = Modifier.height(120.dp))
         }
+
+        Spacer(Modifier.height(32.dp))
+
+        // Settings Rows — Clean & Elegant
+        SettingsRow(
+            icon = { Icon(Icons.Default.Person, null, tint = IntimacePurple) },
+            title = "Edit Profile",
+            subtitle = "Personal information & preferences",
+            onClick = onEditProfile
+        )
+        Spacer(Modifier.height(12.dp))
+
+        SettingsRow(
+            icon = { Icon(Icons.Default.Notifications, null, tint = IntimacePurple) },
+            title = "Notifications",
+            subtitle = "Manage alerts & reminders",
+            onClick = onNotifications
+        )
+        Spacer(Modifier.height(12.dp))
+
+        SettingsRow(
+            icon = { Icon(Icons.Default.Lock, null, tint = IntimacePurple) },
+            title = "Privacy & Security",
+            subtitle = "Control data sharing & access",
+            onClick = onPrivacy
+        )
+        Spacer(Modifier.height(12.dp))
+
+        SettingsRow(
+            icon = { Icon(Icons.Default.Link, null, tint = IntimacePurple) },
+            title = "Partner Link Settings",
+            subtitle = "Manage what information is shared",
+            onClick = onPartnerLink
+        )
+        Spacer(Modifier.height(12.dp))
+
+        SettingsRow(
+            icon = { Icon(Icons.Default.Help, null, tint = IntimacePurple) },
+            title = "Help & Support",
+            subtitle = "FAQs, contact us, feedback",
+            onClick = onHelp
+        )
+        Spacer(Modifier.height(24.dp))
+
+        // LOG OUT — RED FOR IMPACT
+        SettingsRow(
+            icon = { Icon(Icons.Default.ExitToApp, null, tint = Color(0xFFEF4444)) },
+            title = "Log Out",
+            subtitle = "Sign out of your account",
+            onClick = onLogout,
+            trailingContent = {
+                Icon(Icons.Default.ChevronRight, null, tint = Color(0xFFEF4444))
+            }
+        )
+
+        Spacer(Modifier.height(40.dp))
+
+        // Footer
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Intimace v1.0.0",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White.copy(alpha = 0.7f)
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                text = "© 2025 Intimace. Made with love in the Philippines",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.White.copy(alpha = 0.6f)
+            )
+        }
+
+        Spacer(Modifier.height(140.dp)) // safe space for bottom nav
     }
 }
 
+// FLAWLESS PREVIEW
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun SettingsScreenPreview() {
-    val dummyState = CreateAccountUiState(
-        name = "John Doe",
-        email = "john.doe@example.com"
-    )
-
-    SettingsScreen(
-        navController = rememberNavController(),
-        createAccountUiState = dummyState,
-        onEditProfile = {},
-        onNotifications = {},
-        onPrivacy = {},
-        onPartnerLink = {},
-        onHelp = {},
-        onLogout = {}
-    )
+    IntimaceTheme {
+        SettingsScreen(
+            createAccountUiState = CreateAccountUiState(
+                name = "Maria Lopez",
+                email = "maria@intimace.ph"
+            ),
+            onEditProfile = {},
+            onNotifications = {},
+            onPrivacy = {},
+            onPartnerLink = {},
+            onHelp = {},
+            onLogout = {}
+        )
+    }
 }

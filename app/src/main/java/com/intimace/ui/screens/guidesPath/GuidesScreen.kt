@@ -3,31 +3,18 @@ package com.intimace.ui.screens.guidesPath
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -36,89 +23,113 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.intimace.data.guides
 import com.intimace.model.Guide
-import com.intimace.ui.components.AppBottomNav
+import com.intimace.ui.theme.IntimaceGradient
+import com.intimace.ui.theme.IntimacePurple
 import com.intimace.ui.theme.IntimaceTheme
 
 @Composable
 fun GuidesScreen(
-    navController: NavHostController = rememberNavController(),
     guidesList: List<Guide>,
     onOpenGuide: (Int) -> Unit = {},
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {}     // kept for NavHost, but not used here
 ) {
-    val scrollState = rememberScrollState()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(IntimaceGradient)
+            .verticalScroll(rememberScrollState())
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(horizontal = 20.dp)
+    ) {
+        Spacer(Modifier.height(24.dp))
 
-    Scaffold { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(scrollState)
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-        ) {
-            Text("Guides", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(12.dp))
+        // Header — "Guides" in the UPPER LEFT (just like your original design)
+        Text(
+            text = "Guides",
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold,
+            color = IntimacePurple
+        )
 
-            guidesList.forEachIndexed { id, guide ->
-                Card(
+        Spacer(Modifier.height(32.dp))
+
+        // Guides List — premium cards as before
+        guidesList.forEachIndexed { index, guide ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp)
+                    .clickable { onOpenGuide(index) },
+                shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
+            ) {
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .clickable { onOpenGuide(id) },
-                    shape = RoundedCornerShape(12.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    ),
-                    onClick = { onOpenGuide(id) }
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                        horizontalArrangement = Arrangement.Start
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                     ) {
-                        // thumbnail placeholder
-                        Box(
-                            modifier = Modifier
-                                .size(90.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f))
-                        ) {
-                            Image(
-                                painter = painterResource(guides[id].img),
-                                modifier = Modifier.size(90.dp),
-                                contentDescription = "Product image",
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(12.dp))
-
-                        Column(modifier = Modifier
-                            .fillMaxWidth()
-                        ) {
-                            Text(text = stringResource(guides[id].title), style = MaterialTheme.typography.titleMedium, color = Color.Black, fontWeight = FontWeight.SemiBold, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Text(text = stringResource(guides[id].description), style = MaterialTheme.typography.bodySmall, color = Color.Black, maxLines = 3, overflow = TextOverflow.Ellipsis)
-                        }
+                        Image(
+                            painter = painterResource(id = guide.img),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.size(100.dp)
+                        )
                     }
+
+                    Spacer(Modifier.width(16.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(guide.title),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            color = IntimacePurple
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            text = stringResource(guide.description).take(120) + "...",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFF666666),
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        tint = IntimacePurple.copy(alpha = 0.6f),
+                        modifier = Modifier
+                            .size(28.dp)
+                            .rotate(180f)
+                    )
                 }
             }
-
-            Spacer(modifier = Modifier.height(120.dp)) // safe spacing for bottom nav
         }
+
+        Spacer(Modifier.height(140.dp)) // Safe space for bottom nav
     }
 }
 
-@Preview(showBackground = true)
+
+// BEAUTIFUL PREVIEW
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GuidesScreenPreview() {
     IntimaceTheme {
-        GuidesScreen(guidesList = guides)
+        GuidesScreen(
+            guidesList = guides,
+            onOpenGuide = {},
+            onBack = {}
+        )
     }
 }

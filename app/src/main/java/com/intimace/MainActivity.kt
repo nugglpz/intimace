@@ -271,7 +271,6 @@ fun IntimaceApp(
 
                 composable("guides") {
                     GuidesScreen(
-                        navController = navController,
                         guidesList = guides,
                         onOpenGuide = { index ->
                             guideViewModel.setGuideIndex(index)
@@ -292,7 +291,6 @@ fun IntimaceApp(
                 composable("shop") {
                     val context = LocalContext.current
                     ShopScreen(
-                        navController = navController,
                         shoppingCartUiState = shoppingCartUiState,
                         onOpenProduct = { product ->
                             shopViewModel.setCurrentProduct(product)
@@ -312,7 +310,6 @@ fun IntimaceApp(
                 ) { backStackEntry ->
                     val context = LocalContext.current
                     ProductScreen(
-                        navController = navController,
                         currentProduct = shopUiState.currentProduct,
                         onAddToCart = { product, price ->
                             shoppingCartViewModel.addToCart(product, price)
@@ -381,7 +378,6 @@ fun IntimaceApp(
                 composable("settings") {
                     val context = LocalContext.current
                     SettingsScreen(
-                        navController = navController,
                         createAccountUiState = createAccountUiState,
                         onEditProfile = { navController.navigate("editProfile") },
                         onNotifications = { navController.navigate("notifications") },
@@ -400,7 +396,6 @@ fun IntimaceApp(
                 composable("editProfile") {
                     val context = LocalContext.current
                     EditProfileScreen(
-                        navController = navController,
                         onSave = { name, email, age, avgCycle, periodLength ->
                             settingsViewModel.editProfile(name, email, age, avgCycle, periodLength)
                             Toast.makeText(context, "Changes saved!", Toast.LENGTH_SHORT).show()
