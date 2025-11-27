@@ -1,41 +1,19 @@
 package com.intimace.ui.screens.settingsPath
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CopyAll
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.LinkOff
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,229 +21,243 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.unit.sp
 import com.intimace.data.currentAccount
-import com.intimace.ui.components.AppBottomNav
-import com.intimace.ui.components.SettingsRow
+import com.intimace.ui.components.PrimaryButton
 import com.intimace.ui.components.WhiteOutlinedFieldTrailing
+import com.intimace.ui.theme.*
 import com.intimace.uistate.SettingsUiState
 import com.intimace.uistate.Sex
 
 @Composable
 fun PartnerLinkScreen(
-    navController: NavHostController = rememberNavController(),
     settingsUiState: SettingsUiState,
     onBack: () -> Unit = {},
     onToggle: (String) -> Unit = {},
-    onUnlink: () -> Unit = {},
+    onUnlink: () -> Unit = {}
 ) {
-    if (currentAccount.hasPartner) {
-        var selectedNav by remember { mutableIntStateOf(4) }
-        val scroll = rememberScrollState()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(IntimaceGradient)
+            .verticalScroll(rememberScrollState())
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(horizontal = 20.dp)
+    ) {
+        Spacer(Modifier.height(20.dp))
 
-        Scaffold { innerPadding ->
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scroll)
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+        // Header
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onBack) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = IntimacePurple)
+            }
+            Text(
+                text = if (currentAccount.hasPartner) "Partner Link Settings" else "Partner Link",
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+                color = IntimacePurple
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        if (currentAccount.hasPartner) {
+            // LINKED STATE — Connected Partner
+            Card(
+                shape = RoundedCornerShape(28.dp),
+                elevation = CardDefaults.cardElevation(20.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { onBack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                Column(modifier = Modifier.padding(28.dp)) {
+                    Text("Connected Partner", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = IntimacePurple)
+                    Spacer(Modifier.height(20.dp))
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .clip(CircleShape)
+                                .background(IntimacePurple.copy(0.15f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(Icons.Default.Person, contentDescription = null, tint = IntimacePurple, modifier = Modifier.size(44.dp))
+                        }
+                        Spacer(Modifier.width(20.dp))
+                        Column {
+                            Text("Alex Smith", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                            Text("Connected since May 15, 2023", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF666666))
+                        }
                     }
 
-                    Text("Partner Link Settings", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
-                }
-                Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(Modifier.height(24.dp))
 
-                SettingsRow(icon = { Icon(imageVector = Icons.Default.Link, contentDescription = null, tint = Color(0xFF7C3AED)) }, title = "Partner Sharing", subtitle = "Control what information is shared with your connected partner", onClick = null, showArrow = false)
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                        contentColor = MaterialTheme.colorScheme.onSurface
+                    PrimaryButton(
+                        text = "Unlink Partner",
+                        onClick = onUnlink,
+                        containerColor = Color(0xFFFFF0F0),
+                        contentColor = Color(0xFFD32F2F),
+                        modifier = Modifier.fillMaxWidth()
                     )
-                ) {
-                    Column(modifier = Modifier.padding(12.dp)) {
-                        Text("Connected Partner", fontWeight = FontWeight.Medium)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Box(modifier = Modifier.size(56.dp).clip(CircleShape).background(Color(0xFFE6F0FF)), contentAlignment = Alignment.Center) {
-                                Icon(imageVector = Icons.Default.Person, contentDescription = "partner", tint = Color(0xFF3B82F6))
-                            }
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Column {
-                                Text("Alex Smith", fontWeight = FontWeight.SemiBold)
-                                Text("Connected since May 15, 2023", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-                            Button(onClick = onUnlink, modifier = Modifier.weight(1f), shape = RoundedCornerShape(36.dp)) {
-                                Text("Unlink")
-                            }
-                        }
-                    }
                 }
+            }
 
-                Spacer(modifier = Modifier.height(12.dp))
+            Spacer(Modifier.height(32.dp))
 
-                // Information sharing toggles
-                Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                        contentColor = MaterialTheme.colorScheme.onSurface
+            // Information Sharing
+            Card(
+                shape = RoundedCornerShape(28.dp),
+                elevation = CardDefaults.cardElevation(20.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(28.dp)) {
+                    Text("Information Sharing", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = IntimacePurple)
+                    Spacer(Modifier.height(8.dp))
+                    Text("Choose what your partner can see", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF666666))
+
+                    Spacer(Modifier.height(24.dp))
+
+                    PartnerSharingToggle(
+                        title = "Cycle Predictions",
+                        subtitle = "Period and fertility window dates",
+                        checked = settingsUiState.cyclePredictionsSharingEnabled,
+                        onCheckedChange = { onToggle("cyclePredictionsSharing") }
                     )
-                ) {
-                    Column(modifier = Modifier.padding(12.dp)) {
-                        Text("Information Sharing", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        var cyclePredictionSharing by remember { mutableStateOf(true) }
-                        var moodAndSymptomsSharing by remember { mutableStateOf(false) }
-                        var intimateActivitySharing by remember { mutableStateOf(true) }
-                        var notificationsSharing by remember { mutableStateOf(true) }
-
-                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text("Cycle Predictions", fontWeight = FontWeight.Medium)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text("Period and fertility window dates", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                            }
-                            Switch(checked = settingsUiState.cyclePredictionsSharingEnabled, onCheckedChange = { onToggle("cyclePredictionsSharing") })
-                        }
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text("Mood & Symptoms", fontWeight = FontWeight.Medium)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text("Share logged mood and symptoms", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                            }
-                            Switch(checked = settingsUiState.moodAndSymptomsSharingEnabled, onCheckedChange = { onToggle("moodAndSymptomsSharing") })
-                        }
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text("Intimate Activity", fontWeight = FontWeight.Medium)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text("Share intimate activity logs", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                            }
-                            Switch(checked = settingsUiState.intimateActivitySharingEnabled, onCheckedChange = { onToggle("intimateActivitySharing") })
-                        }
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text("Notifications", fontWeight = FontWeight.Medium)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text("Allow partner to receive notifications", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                            }
-                            Switch(checked = settingsUiState.notificationsSharingEnabled, onCheckedChange = { onToggle("notificationsSharing") })
-                        }
-                    }
+                    PartnerSharingToggle(
+                        title = "Mood & Symptoms",
+                        subtitle = "Share logged mood and symptoms",
+                        checked = settingsUiState.moodAndSymptomsSharingEnabled,
+                        onCheckedChange = { onToggle("moodAndSymptomsSharing") }
+                    )
+                    PartnerSharingToggle(
+                        title = "Intimate Activity",
+                        subtitle = "Share intimate activity logs",
+                        checked = settingsUiState.intimateActivitySharingEnabled,
+                        onCheckedChange = { onToggle("intimateActivitySharing") }
+                    )
+                    PartnerSharingToggle(
+                        title = "Notifications",
+                        subtitle = "Allow partner to receive alerts",
+                        checked = settingsUiState.notificationsSharingEnabled,
+                        onCheckedChange = { onToggle("notificationsSharing") }
+                    )
                 }
-
-                Spacer(modifier = Modifier.height(120.dp))
             }
         }
-    } else {
-        var selectedNav by remember { mutableIntStateOf(4) }
-        val scroll = rememberScrollState()
+        else {
+            // NOT LINKED — Invite or Enter Code
+            if (currentAccount.sex == Sex.FEMALE) {
+                Card(
+                    shape = RoundedCornerShape(28.dp),
+                    elevation = CardDefaults.cardElevation(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(28.dp)) {
+                        Text("Share Your Cycle", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = IntimacePurple)
+                        Spacer(Modifier.height(12.dp))
+                        Text("Give your partner your invite code so they can stay informed and supportive.", color = Color(0xFF666666))
 
-        var inviteCode by remember { mutableStateOf("ABCD1234") }
-        var inputCode by remember { mutableStateOf("") }
+                        Spacer(Modifier.height(28.dp))
 
-        Scaffold { innerPadding ->
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scroll)
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { onBack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                    Text("Partner Link", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-
-                if (currentAccount.sex == Sex.FEMALE) {
-                    Text("Share your cycle information with a trusted partner to help them stay informed about your reproductive health.", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                            contentColor = MaterialTheme.colorScheme.onSurface
-                        )
-                    ) {
-                        Column(modifier = Modifier.padding(12.dp)) {
-                            Text("Your Invite Code", fontWeight = FontWeight.Medium)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Card(shape = RoundedCornerShape(8.dp), modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(0.dp),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                                    contentColor = MaterialTheme.colorScheme.onSurface
-                                )
-                            ) {
-                                Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                                    Text(inviteCode, modifier = Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
-                                    IconButton(onClick = { /* copy to clipboard */ }) {
-                                        Icon(imageVector = Icons.Default.CopyAll, contentDescription = "Copy")
-                                    }
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text("Share this code with your partner to link your accounts", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-                } else {
-                    Text("Link with your partner to stay informed about her reproductive health.", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(6.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                    ) {
-                        Column(modifier = Modifier.padding(12.dp)) {
-                            Text("Enter Partner's Code", fontWeight = FontWeight.Medium)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            WhiteOutlinedFieldTrailing(value = inputCode, onValueChange = { inputCode = it }, labelText = "Enter partner's code", placeholderText = "Enter partner's code")
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Button(onClick = { /* link action */ }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(36.dp)) {
-                                Text("Link with Partner")
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("ABCD1234", fontWeight = FontWeight.Bold, fontSize = 28.sp, color = IntimacePurple, modifier = Modifier.weight(1f))
+                            IconButton(onClick = { /* Copy to clipboard */ }) {
+                                Icon(Icons.Default.ContentCopy, contentDescription = "Copy", tint = IntimacePurple)
                             }
                         }
+
+                        Spacer(Modifier.height(16.dp))
+                        Text("Share this code with your partner", color = Color(0xFF888888))
                     }
                 }
+            } else {
+                Card(
+                    shape = RoundedCornerShape(28.dp),
+                    elevation = CardDefaults.cardElevation(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(28.dp)) {
+                        Text("Connect with Your Partner", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = IntimacePurple)
+                        Spacer(Modifier.height(12.dp))
+                        Text("Enter your partner’s invite code to stay connected to her cycle.", color = Color(0xFF666666))
 
-                Spacer(modifier = Modifier.height(120.dp))
+                        Spacer(Modifier.height(24.dp))
+
+                        var code by remember { mutableStateOf("") }
+                        WhiteOutlinedFieldTrailing(
+                            value = code,
+                            onValueChange = { code = it.uppercase().take(8) },
+                            labelText = "Enter Invite Code",
+                            placeholderText = "e.g. ABCD1234"
+                        )
+
+                        Spacer(Modifier.height(24.dp))
+
+                        PrimaryButton(
+                            text = "Link with Partner",
+                            onClick = { /* Link logic */ },
+                            enabled = code.length == 8
+                        )
+                    }
+                }
             }
         }
+
+        Spacer(Modifier.height(140.dp))
     }
 }
 
-@Preview(showBackground = true)
+@Composable
+private fun PartnerSharingToggle(
+    title: String,
+    subtitle: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(title, fontWeight = FontWeight.Medium, color = Color(0xFF1A1A1A))
+            Spacer(Modifier.height(4.dp))
+            Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF666666))
+        }
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = IntimacePurple,
+                checkedTrackColor = IntimacePurple.copy(0.4f)
+            )
+        )
+    }
+}
+
+// FLAWLESS PREVIEW
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PartnerLinkScreenPreview() {
-    val mockSettings = SettingsUiState(
-        cyclePredictionsSharingEnabled = true,
-        moodAndSymptomsSharingEnabled = false,
-        intimateActivitySharingEnabled = true,
-        notificationsSharingEnabled = true
-    )
-
-    PartnerLinkScreen(
-        settingsUiState = mockSettings,
-        onBack = {},
-        onToggle = {},
-        onUnlink = {}
-    )
+    IntimaceTheme {
+        PartnerLinkScreen(
+            settingsUiState = SettingsUiState(
+                cyclePredictionsSharingEnabled = true,
+                moodAndSymptomsSharingEnabled = false,
+                intimateActivitySharingEnabled = true,
+                notificationsSharingEnabled = true
+            ),
+            onBack = {},
+            onToggle = {},
+            onUnlink = {}
+        )
+    }
 }

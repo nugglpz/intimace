@@ -419,7 +419,6 @@ fun IntimaceApp(
                 }
                 composable("privacy") {
                     PrivacyAndSecurityScreen(
-                        navController = navController,
                         settingsUiState = settingsUiState,
                         onToggle = { setting ->
                             settingsViewModel.toggleNotificationSetting(setting)
@@ -430,7 +429,6 @@ fun IntimaceApp(
                 composable("partnerLink") {
                     val context = LocalContext.current
                     PartnerLinkScreen(
-                        navController = navController,
                         settingsUiState = settingsUiState,
                         onToggle = { setting ->
                             settingsViewModel.toggleNotificationSetting(setting)

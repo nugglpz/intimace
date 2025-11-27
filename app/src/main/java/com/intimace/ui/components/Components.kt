@@ -441,8 +441,8 @@ fun AppBottomNav(
         tonalElevation = 6.dp,
         modifier = modifier.fillMaxWidth()
     ) {
-        val selectedColor = MaterialTheme.colorScheme.primary
-        val unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
+        val selectedColor   = IntimacePurple
+        val unselectedColor = Color.LightGray.copy(alpha = 0.6f)
 
         fun navigateTo(route: String) {
             if (currentRoute != route) {
